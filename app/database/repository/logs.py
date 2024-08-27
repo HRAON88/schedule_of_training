@@ -12,3 +12,8 @@ class LogsRepository(BaseFunction):
         if result:
             return self.model(*result)
 
+    def find_logs(self, user_id):
+        self.cur.execute(f"SELECT * FROM {self.table} WHERE userid = {user_id}")
+        result = self.cur.fetchall()
+        if result:
+            return self.model(*result)
