@@ -16,4 +16,4 @@ class LogsRepository(BaseFunction):
         self.cur.execute(f"SELECT * FROM {self.table} WHERE userid = {user_id}")
         result = self.cur.fetchall()
         if result:
-            return self.model(*result)
+            return [self.model(*i) for i in self.cur.fetchall()]
