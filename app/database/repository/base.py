@@ -19,11 +19,12 @@ class BaseFunction:
         columns, values = [], []
         for key, value in model.to_dict().items():
             columns.append(key)
+            if value is None:
+                value = "null"
             values.append(value)
-
         self.cur.execute(f"INSERT INTO {self.table} {tuple(columns)} VALUES {tuple(values)}")
-
         self.connection.commit()
+        return self.get_by_id(model.id)
 
     def delete(self, model: BaseModel):
         self.cur.execute(f"delete from {self.table} WHERE {self.table}.id = {model.id}")

@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS schedules (
 CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstname text not NULL,
-        lastname text not NULL,
+        lastname text,
         roleid not NULL,
         foreign key (roleid) references role(id)
 );
@@ -32,3 +32,4 @@ CREATE TABLE IF NOT EXISTS logs (
         foreign key (usersid) references users(id),
         foreign key (roleid) references role(id)
 );
+
