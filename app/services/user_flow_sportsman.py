@@ -17,15 +17,13 @@ class UserFlowSportsman:
 
     def refuse_to_train(self, user_id, schedule_id):
         with Connection() as c:
-            if user_id == True and schedule_id == True:
-                repository = LogsRepository(c)
-                model = repository.find_log(user_id, schedule_id)
-                if model:
-                    repository.delete(model)
+            repository = LogsRepository(c)
+            model = repository.find_log(user_id, schedule_id)
+            if model:
+                repository.delete(model)
 
     def show_schedule(self, user_id):
         with Connection() as c:
-            if user_id:
-                repository = LogsRepository(c)
-                result = repository.find_logs(user_id)
-                return result
+            repository = LogsRepository(c)
+            result = repository.find_logs(user_id)
+            return result
