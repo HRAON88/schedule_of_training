@@ -2,9 +2,9 @@ import telebot
 from telebot import types
 
 from app.services.core import Core
+from app.settings import settings
 
-API_TOKEN = '6992658701:AAFBcW2HeoU2QW4tz5fCZHTYKlgkNmtNqNo'
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(settings.token)
 
 # Хранение данных о записях
 user_trainings = {}

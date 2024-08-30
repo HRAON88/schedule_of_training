@@ -225,3 +225,4 @@ cython_debug/
 logs
 config.env
 *.db
+.env
