@@ -1,11 +1,17 @@
 from app.database.connection import Connection
 from app.database.models.schedules import ScheduleModel
 from app.database.models.user import UserModel
+from app.database.repository.logs import LogsRepository
 from app.database.repository.schedules import SchedulesRepository
 from app.database.repository.users import UsersRepository
 
 
 class UserFlowAdmin:
+    def show_all_logs(self):
+        with Connection() as c:
+            repository = LogsRepository(c)
+            return repository.find_all_logs()
+
 
     def create_schedule(self, dtstart_user, dtend_user, sportid_user):
         with Connection() as c:
