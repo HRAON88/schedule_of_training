@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS schedules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         dtstart text not NULL,
         dtend text not NULL,
-        sportid int not NULL,
+        sportid text not NULL,
         foreign key (sportid) references sports(id)
 );
 
