@@ -8,7 +8,7 @@ class Core:
     def is_admin_mode(self):
         with Connection() as c:
             r = UsersRepository(c)
-            return len(r.get_all()) > 0
+            return len(r.get_all()) == 0
 
     def get_user(self, user_id) -> UserModel:
         with Connection() as c:

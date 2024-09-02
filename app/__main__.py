@@ -1,7 +1,8 @@
 from app.database.models.roles import RolesModel
 from app.database.repository.roles import RolesRepository
+
+from app.telegram_bot.aio_bot import main
 from database.connection import Connection
-from telegram.tgconnection import bot
 
 
 def launch_db():
@@ -26,4 +27,4 @@ def launch_db():
 if __name__ == '__main__':
     print("start app")
     launch_db()
-    bot.polling()
+    main()
