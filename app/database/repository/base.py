@@ -18,6 +18,8 @@ class BaseFunction:
     def add(self, model: BaseModel):
         columns, values = [], []
         for key, value in model.to_dict().items():
+            if key == "id" and value is None:
+                continue
             columns.append(key)
             if value is None:
                 value = "null"

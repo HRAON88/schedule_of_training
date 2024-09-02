@@ -10,7 +10,7 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # Get CallbackQuery from Update
     query = update.callback_query
     core = Core()
-    tg_user = update.message.from_user
+    tg_user = update.callback_query.from_user
     user = core.get_user(tg_user.id)
     # CallbackQueries need to be answered, even if no notification to the user is needed
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
@@ -35,5 +35,5 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     # Instead of sending a new message, edit the message that
     # originated the CallbackQuery. This gives the feeling of an
     # interactive menu.
-    await query.edit_message_text(text="Start handler, Choose a route", reply_markup=reply_markup)
+    await query.edit_message_text(text="Выберете действие", reply_markup=reply_markup)
     return START_ROUTES

@@ -7,6 +7,7 @@ logging.basicConfig(
 logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+# states
 START_ROUTES, END_ROUTES = range(2)
 # Callback data
 ONE, TWO, THREE, FOUR = range(4)
