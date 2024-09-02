@@ -25,6 +25,7 @@ class BaseFunction:
                 value = "null"
             values.append(value)
         self.cur.execute(f"INSERT INTO {self.table} {tuple(columns)} VALUES {tuple(values)}")
+        model.id = self.cur.lastrowid
         self.connection.commit()
         return self.get_by_id(model.id)
 

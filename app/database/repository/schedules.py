@@ -5,7 +5,7 @@ from app.schemes.participated import SchemeParticipated
 
 
 class SchedulesRepository(BaseFunction):
-    table = 'schedule'
+    table = 'schedules'
     model = ScheduleModel
 
     def find_schedules_by_coach(self, user_id):

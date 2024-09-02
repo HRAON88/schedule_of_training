@@ -5,7 +5,7 @@ from telegram.ext import Application, CallbackQueryHandler, CommandHandler, Cont
 
 from app.services.core import Core
 from app.settings import settings
-from app.telegram_bot.actions.create_schedule import create_schedule_step_1, create_schedule_step_2
+from app.telegram_bot.actions.create_schedule import create_schedule_step_1, create_schedule_step_2, create_schedule_step_3
 from app.telegram_bot.actions.delete_schedule import delete_schedule
 from app.telegram_bot.actions.edit_schedule import edit_schedule
 from app.telegram_bot.actions.show_allowed_schedules import show_allowed_schedules
@@ -25,7 +25,8 @@ def main() -> None:
         states={
             START_ROUTES: [
                 CallbackQueryHandler(create_schedule_step_1, pattern="^" + "create_schedule" + "$"),
-                CallbackQueryHandler(create_schedule_step_2, pattern="^" + "create_schedule_time_"),
+                CallbackQueryHandler(create_schedule_step_2, pattern="^" + "create_schedule_sport_"),
+                CallbackQueryHandler(create_schedule_step_3, pattern="^" + "create_schedule_time_"),
                 CallbackQueryHandler(delete_schedule, pattern="^" + "delete_schedule" + "$"),
                 CallbackQueryHandler(edit_schedule, pattern="^" + "edit_schedule" + "$"),
                 CallbackQueryHandler(edit_schedule, pattern="^" + "edit_user_role" + "$"),

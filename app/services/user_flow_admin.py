@@ -7,13 +7,13 @@ from app.database.repository.users import UsersRepository
 
 class UserFlowAdmin:
 
-    def create_schedule(self, dtstart_user, dtend_user, sportid_user):
+    def create_schedule(self, dt_start, dt_end, sport_id):
         with Connection() as c:
             repository = SchedulesRepository(c)
             model = ScheduleModel(
-                dtstart=dtstart_user,
-                dtend=dtend_user,
-                sportid=sportid_user
+                dtstart=dt_start,
+                dtend=dt_end,
+                sportid=sport_id,
             )
             repository.add(model)
 
