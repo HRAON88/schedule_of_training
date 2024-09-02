@@ -8,6 +8,7 @@ class UserModel(BaseModel):
     id: int
     firstname: str
     lastname: str
+    username: str
     roleid: int
 
     def is_admin(self):

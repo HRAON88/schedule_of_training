@@ -15,7 +15,7 @@ class Core:
             r = UsersRepository(c)
             return r.get_by_id(user_id)
 
-    def add_admin_user(self, user_id, first_name, last_name) -> UserModel:
+    def add_admin_user(self, user_id, first_name, last_name, username) -> UserModel:
         with Connection() as c:
             r = UsersRepository(c)
             role_r = RolesRepository(c)
@@ -26,11 +26,12 @@ class Core:
                 id=user_id,
                 firstname=first_name,
                 lastname=last_name,
+                username=username,
                 roleid=admin_role.id,
             )
             return r.add(m)
 
-    def add_basic_user(self, user_id, first_name, last_name) -> UserModel:
+    def add_basic_user(self, user_id, first_name, last_name, username) -> UserModel:
         with Connection() as c:
             r = UsersRepository(c)
             role_r = RolesRepository(c)
@@ -41,6 +42,7 @@ class Core:
                 id=user_id,
                 firstname=first_name,
                 lastname=last_name,
+                username=username,
                 roleid=admin_role.id,
             )
             return r.add(m)

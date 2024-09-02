@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstname text not NULL,
         lastname text,
+        username text,
         roleid not NULL,
         foreign key (roleid) references role(id)
 );
