@@ -34,6 +34,7 @@ class SchedulesRepository(BaseFunction):
         )
         names = [description[0] for description in self.cur.description]
         return [ScheduleModelDetail(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]
+
     def find_who_will_go(self, *schedule_id):
         self.cur.execute(
             f"""

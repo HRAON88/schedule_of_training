@@ -63,9 +63,13 @@ async def create_schedule_step_3(update: Update, context: ContextTypes.DEFAULT_T
     cache_data = user_flow_storage[user.id][json.loads(update.callback_query.data)["trace_id"]]
     with Connection() as con:
         repository = SchedulesRepository(con)
-        schedules: list[ScheduleModel] = repository.get_all_by_date_and_sport(cache_data["day"], cache_data["sport"]["id"])
-    exist_schedules = {(schedule.t_start, schedule.t_end)for schedule in schedules}
-    available_times = [f"{hour}:00 - {hour + 1}:00" for hour in range(8, 21) if (f"{hour}:00", f"{hour + 1}:00") not in exist_schedules]
+        schedules: list[ScheduleModel] = repository.get_all_by_date_and_sport(
+            cache_data["day"], cache_data["sport"]["id"]
+        )
+    exist_schedules = {(schedule.t_start, schedule.t_end) for schedule in schedules}
+    available_times = [
+        f"{hour}:00 - {hour + 1}:00" for hour in range(8, 21) if (f"{hour}:00", f"{hour + 1}:00") not in exist_schedules
+    ]
     keyboard = KeyBoardFactory()
     for item in available_times:
         trace_id = uuid.uuid4().hex

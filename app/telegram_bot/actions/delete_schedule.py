@@ -6,7 +6,6 @@ from app.telegram_bot.settings import END_ROUTES
 
 
 async def delete_schedule(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
     await query.answer()
     keyboard = [
