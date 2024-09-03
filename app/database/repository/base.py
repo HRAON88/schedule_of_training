@@ -36,11 +36,10 @@ class BaseFunction:
     def update(self, model: BaseModel, item_id):
         spis = []
         for key, value in model.to_dict().items():
-            spis.append(f'{key} = {value}')
+            spis.append(f"{key} = {value}")
         self.cur.execute(f"UPDATE {self.table} SET {str(spis)[1:-1]} WHERE id = {item_id} ")
         self.connection.commit()
 
     def get_all(self):
-        self.cur.execute(f'select * from {self.table}')
+        self.cur.execute(f"select * from {self.table}")
         return [self.model(*i) for i in self.cur.fetchall()]
-

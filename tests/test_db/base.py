@@ -1,16 +1,14 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 
 from app.database.connection import Connection
 
 
 class BaseTest(ABC):
     @abstractmethod
-    def repository(self):
-        ...
+    def repository(self): ...
 
     @abstractmethod
-    def model(self):
-        ...
+    def model(self): ...
 
     def test_insert(self, database_connection):
         repository = self.repository(database_connection)

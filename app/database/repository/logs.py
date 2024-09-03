@@ -3,7 +3,7 @@ from app.database.repository.base import BaseFunction
 
 
 class LogsRepository(BaseFunction):
-    table = 'logs'
+    table = "logs"
     model = LogsModel
 
     def find_log(self, user_id, schedule_id):

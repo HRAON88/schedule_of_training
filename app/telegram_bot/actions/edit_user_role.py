@@ -1,6 +1,7 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
+from app.schemes.callback_data import CallBackData
 from app.telegram_bot.settings import END_ROUTES
 
 
@@ -9,7 +10,7 @@ async def edit_user_role(update: Update, context: ContextTypes.DEFAULT_TYPE) -> 
     query = update.callback_query
     await query.answer()
     keyboard = [
-        [InlineKeyboardButton("Вернуться в меню", callback_data="back_to_menu")],
+        [InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="back_to_menu").model_dump_json())],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text=f"edit_user_role", reply_markup=reply_markup)

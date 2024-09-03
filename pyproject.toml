@@ -12,6 +12,8 @@ telebot = "^0.0.5"
 pydantic = "^2.8.2"
 pydantic-settings = "^2.4.0"
 python-telegram-bot = "^21.4"
+black = "^24.8.0"
+isort = "^5.13.2"
 
 
 [build-system]
@@ -23,3 +25,11 @@ python_files = "test_*.py"
 python_classes = ["*Test", "Test*"]
 python_functions = "test_*"
 testpaths = "tests/"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = 'black'
+line_length = 120
+lines_after_imports = 2

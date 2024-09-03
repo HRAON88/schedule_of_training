@@ -3,5 +3,5 @@ from app.database.repository.base import BaseFunction
 
 
 class SportsRepository(BaseFunction):
-    table = 'sports'
+    table = "sports"
     model = SportsModel

@@ -3,7 +3,7 @@ from app.database.repository.base import BaseFunction
 
 
 class RolesRepository(BaseFunction):
-    table = 'roles'
+    table = "roles"
     model = RolesModel
 
     def get_by_role(self, role):

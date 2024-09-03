@@ -12,7 +12,7 @@ from app.utils.get_path import get_path
 
 @fixture
 def database_connection():
-    path = 'events.db'
+    path = "events.db"
     connection = sqlite3.connect(path)
 
     with open(get_path("app/init_db.txt"), mode="r") as file:
@@ -41,4 +41,3 @@ def coach(database_connection):
 @fixture
 def sportsman(database_connection):
     return create_roles(database_connection, RolesModel(2, "sportsman"))
-

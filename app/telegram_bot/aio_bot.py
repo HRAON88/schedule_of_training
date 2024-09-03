@@ -1,18 +1,32 @@
-import logging
+import json
+import re
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes, ConversationHandler
+from telegram import Update
+from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ConversationHandler
 
-from app.services.core import Core
 from app.settings import settings
-from app.telegram_bot.actions.create_schedule import create_schedule_step_1, create_schedule_step_2, create_schedule_step_3
+from app.telegram_bot.actions.create_schedule import (
+    create_schedule_step_1,
+    create_schedule_step_2,
+    create_schedule_step_3,
+    create_schedule_step_4,
+)
 from app.telegram_bot.actions.delete_schedule import delete_schedule
 from app.telegram_bot.actions.edit_schedule import edit_schedule
 from app.telegram_bot.actions.show_allowed_schedules import show_allowed_schedules
 from app.telegram_bot.actions.show_my_schedules import show_my_schedules
 from app.telegram_bot.actions.start import start
 from app.telegram_bot.actions.start_over import start_over
-from app.telegram_bot.settings import START_ROUTES, END_ROUTES
+from app.telegram_bot.settings import END_ROUTES, START_ROUTES
+
+
+def parse_callback(pattern):
+    def validate(callback_data):
+        data = json.loads(callback_data)
+        tag = data["tag"]
+        return re.match(pattern, tag)
+
+    return validate
 
 
 def main() -> None:
@@ -24,21 +38,21 @@ def main() -> None:
         entry_points=[CommandHandler("start", start)],
         states={
             START_ROUTES: [
-                CallbackQueryHandler(create_schedule_step_1, pattern="^" + "create_schedule" + "$"),
-                CallbackQueryHandler(create_schedule_step_2, pattern="^" + "create_schedule_sport_"),
-                CallbackQueryHandler(create_schedule_step_3, pattern="^" + "create_schedule_time_"),
-                CallbackQueryHandler(delete_schedule, pattern="^" + "delete_schedule" + "$"),
-                CallbackQueryHandler(edit_schedule, pattern="^" + "edit_schedule" + "$"),
-                CallbackQueryHandler(edit_schedule, pattern="^" + "edit_user_role" + "$"),
-                CallbackQueryHandler(show_my_schedules, pattern="^" + "show_my_schedules" + "$"),
-                CallbackQueryHandler(show_allowed_schedules, pattern="^" + "show_allowed_schedules" + "$"),
+                CallbackQueryHandler(create_schedule_step_1, pattern=parse_callback("^create_schedule$")),
+                CallbackQueryHandler(create_schedule_step_2, pattern=parse_callback("^cs_1$")),
+                CallbackQueryHandler(create_schedule_step_3, pattern=parse_callback("^cs_2$")),
+                CallbackQueryHandler(create_schedule_step_4, pattern=parse_callback("^cs_3$")),
+                CallbackQueryHandler(delete_schedule, pattern=parse_callback("^delete_schedule$")),
+                CallbackQueryHandler(edit_schedule, pattern=parse_callback("^edit_schedule$")),
+                CallbackQueryHandler(edit_schedule, pattern=parse_callback("^edit_user_role$")),
+                CallbackQueryHandler(show_my_schedules, pattern=parse_callback("^show_my_schedules$")),
+                CallbackQueryHandler(show_allowed_schedules, pattern=parse_callback("^show_allowed_schedules$")),
             ],
             END_ROUTES: [
-                CallbackQueryHandler(start_over, pattern="^" + "back_to_menu" + "$"),
+                CallbackQueryHandler(start_over, pattern=parse_callback("back_to_menu")),
             ],
         },
         fallbacks=[CommandHandler("start", start)],
-
     )
 
     # Add ConversationHandler to application that will be used for handling updates

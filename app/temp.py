@@ -1,9 +1,10 @@
 from app.database.models.sport import SportsModel
 
+
 l = [SportsModel(1, "sambo1"), SportsModel(1, "sambo"), SportsModel(2, "box")]
-d={}
+d = {}
 k = []
-v = ''
+v = ""
 for i in l:
     if i.id not in d:
         d[i.id] = []

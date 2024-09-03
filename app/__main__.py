@@ -1,10 +1,10 @@
+from database.connection import Connection
+
 from app.database.models.roles import RolesModel
 from app.database.models.sport import SportsModel
 from app.database.repository.roles import RolesRepository
 from app.database.repository.sports import SportsRepository
-
 from app.telegram_bot.aio_bot import main
-from database.connection import Connection
 
 
 def upload_roles(con):
@@ -46,7 +46,7 @@ def launch_db():
         upload_sports(con)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("start app")
     launch_db()
     main()

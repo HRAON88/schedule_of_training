@@ -3,5 +3,5 @@ from app.database.repository.base import BaseFunction
 
 
 class UsersRepository(BaseFunction):
-    table = 'users'
+    table = "users"
     model = UserModel

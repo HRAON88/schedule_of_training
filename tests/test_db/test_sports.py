@@ -10,4 +10,4 @@ class TestSports(BaseTest):
 
     @property
     def model(self):
-        return SportsModel(1, 'sambo')
+        return SportsModel(1, "sambo")
