@@ -8,14 +8,13 @@ class SchedulesRepository(BaseFunction):
     table = "schedules"
     model = ScheduleModel
 
-    def find_schedules_by_coach(self, user_id):
+    def find_schedules_by_user(self, user_id):
         self.cur.execute(
             f"""
             SELECT 
             {self.table}.*,
             sports.sport
             FROM {self.table}
-            INNER JOIN logs on logs.schedule_id = {self.table}.id
             INNER JOIN logs on sports.id = {self.table}.sports_id
             WHERE userid = {user_id}
         """
@@ -23,6 +22,18 @@ class SchedulesRepository(BaseFunction):
         names = [description[0] for description in self.cur.description]
         return [ScheduleModelDetail(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]
 
+    def get_all(self):
+        self.cur.execute(
+            f"""
+                SELECT 
+                {self.table}.*,
+                sports.sport as sport
+                FROM {self.table}
+                INNER JOIN sports on sports.id = {self.table}.sport_id
+            """
+        )
+        names = [description[0] for description in self.cur.description]
+        return [ScheduleModelDetail(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]
     def find_who_will_go(self, *schedule_id):
         self.cur.execute(
             f"""
@@ -44,4 +55,3 @@ class SchedulesRepository(BaseFunction):
         )
         names = [description[0] for description in self.cur.description]
         return [self.model(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]
-

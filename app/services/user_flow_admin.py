@@ -27,6 +27,11 @@ class UserFlowAdmin:
             if model:
                 repository.delete(model)
 
+    def show_schedules(self):
+        with Connection() as c:
+            repository = SchedulesRepository(c)
+            return repository.get_all()
+
     def edit_schedule(self, id_outer, date, t_start, t_end):
         with Connection() as c:
             repository = SchedulesRepository(c)

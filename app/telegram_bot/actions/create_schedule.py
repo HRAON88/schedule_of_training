@@ -3,14 +3,13 @@ import json
 import uuid
 from calendar import monthrange
 
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import Update
 from telegram.ext import ContextTypes
 
 from app.database.connection import Connection
 from app.database.models.schedules import ScheduleModel
 from app.database.repository.schedules import SchedulesRepository
 from app.database.repository.sports import SportsRepository
-from app.schemes.callback_data import CallBackData
 from app.services.user_flow_admin import UserFlowAdmin
 from app.telegram_bot.settings import END_ROUTES, START_ROUTES
 from app.user_flow_storage import user_flow_storage
@@ -31,9 +30,7 @@ async def create_schedule_step_1(update: Update, context: ContextTypes.DEFAULT_T
         data = {"sport": sport.to_dict()}
         keyboard.add_item(sport.sport, "cs_1", trace_id)
         user_flow_storage[user.id][trace_id] = data
-
-    reply_markup = InlineKeyboardMarkup(keyboard.generate())
-    await query.edit_message_text(text="Выберете вид спорта", reply_markup=reply_markup)
+    await query.edit_message_text(text="Выберете вид спорта", reply_markup=keyboard.generate())
     return START_ROUTES
 
 
@@ -55,8 +52,7 @@ async def create_schedule_step_2(update: Update, context: ContextTypes.DEFAULT_T
         user_flow_storage[user.id][trace_id].update(cache_data)
         user_flow_storage[user.id][trace_id]["day"] = item
         keyboard.add_item(item, "cs_2", trace_id)
-    reply_markup = InlineKeyboardMarkup(keyboard.generate())
-    await query.edit_message_text(text="Выберете дату", reply_markup=reply_markup)
+    await query.edit_message_text(text="Выберете дату", reply_markup=keyboard.generate())
     return START_ROUTES
 
 
@@ -65,7 +61,6 @@ async def create_schedule_step_3(update: Update, context: ContextTypes.DEFAULT_T
     await query.answer()
     user = update.callback_query.from_user
     cache_data = user_flow_storage[user.id][json.loads(update.callback_query.data)["trace_id"]]
-
     with Connection() as con:
         repository = SchedulesRepository(con)
         schedules: list[ScheduleModel] = repository.get_all_by_date_and_sport(cache_data["day"], cache_data["sport"]["id"])
@@ -79,8 +74,7 @@ async def create_schedule_step_3(update: Update, context: ContextTypes.DEFAULT_T
         user_flow_storage[user.id][trace_id].update(cache_data)
         user_flow_storage[user.id][trace_id]["time"] = item
         keyboard.add_item(item, "cs_3", trace_id)
-    reply_markup = InlineKeyboardMarkup(keyboard.generate())
-    await query.edit_message_text(text="Выберете время", reply_markup=reply_markup)
+    await query.edit_message_text(text="Выберете время", reply_markup=keyboard.generate())
     return START_ROUTES
 
 
@@ -91,12 +85,11 @@ async def create_schedule_step_4(update: Update, context: ContextTypes.DEFAULT_T
     cache_data = user_flow_storage[user.id][json.loads(update.callback_query.data)["trace_id"]]
     time_start, time_end = cache_data["time"].split(" - ")
     keyboard = KeyBoardFactory()
-    reply_markup = InlineKeyboardMarkup(keyboard.generate())
     flow = UserFlowAdmin()
     flow.create_schedule(cache_data["day"], time_start, time_end, cache_data["sport"]["id"])
     await query.edit_message_text(
         text=f"Создана тренировка {cache_data['day']} с {time_start} до {time_end}. Вид спорта: {cache_data['sport']['sport']}",
-        reply_markup=reply_markup,
+        reply_markup=keyboard.generate(),
     )
     user_flow_storage.pop(user.id)
     return END_ROUTES

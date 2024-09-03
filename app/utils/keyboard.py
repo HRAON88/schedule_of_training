@@ -1,12 +1,11 @@
-from telegram import InlineKeyboardButton
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from app.schemes.callback_data import CallBackData
 
 
 class KeyBoardFactory:
-    COLUMN_COUNT = 4
-
-    def __init__(self):
+    def __init__(self, column_count=4):
+        self.column_count = column_count
         self.keyboard = [[]]
         self.default_line = [
             InlineKeyboardButton(
@@ -17,7 +16,7 @@ class KeyBoardFactory:
 
     def add_item(self, text: str, tag: str, trace_id: str | None = None):
         last_row = self.keyboard[-1]
-        if len(last_row) < self.COLUMN_COUNT:
+        if len(last_row) < self.column_count:
             last_row.append(
                 InlineKeyboardButton(text, callback_data=CallBackData(tag=tag, trace_id=trace_id).model_dump_json())
             )
@@ -30,4 +29,4 @@ class KeyBoardFactory:
         if not last_row:
             self.keyboard.pop(-1)
         self.keyboard.append(self.default_line)
-        return self.keyboard
+        return InlineKeyboardMarkup(self.keyboard)

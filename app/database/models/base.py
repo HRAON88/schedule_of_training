@@ -1,8 +1,8 @@
-import dataclasses
+from pydantic import BaseModel as PydanticBaseModel
 
 
-class BaseModel:
-    id: int
+class BaseModel(PydanticBaseModel):
+    id: int | None = None
 
     def to_dict(self):
-        return dataclasses.asdict(self)
+        return self.model_dump()

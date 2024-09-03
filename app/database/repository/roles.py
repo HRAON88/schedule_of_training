@@ -11,4 +11,5 @@ class RolesRepository(BaseFunction):
         self.cur.execute(query)
         result = self.cur.fetchone()
         if result:
-            return self.model(*result)
+            names = [description[0] for description in self.cur.description]
+            return self.model(**{col: val for val, col in zip(result, names)})
