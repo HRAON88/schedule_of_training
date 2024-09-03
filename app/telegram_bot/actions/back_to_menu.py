@@ -5,7 +5,6 @@ from app.telegram_bot.settings import START_ROUTES
 
 
 async def back_to_menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-
     query = update.callback_query
     await query.answer()
 

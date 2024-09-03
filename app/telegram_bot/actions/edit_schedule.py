@@ -1,14 +1,15 @@
-import uuid
 import json
+import uuid
+from datetime import datetime
+
 from telegram import Update
 from telegram.ext import ContextTypes
-from datetime import datetime
 
 from app.database.connection import Connection
 from app.database.models.schedules import ScheduleModel
 from app.database.repository.schedules import SchedulesRepository
 from app.services.user_flow_admin import UserFlowAdmin
-from app.telegram_bot.settings import START_ROUTES, END_ROUTES
+from app.telegram_bot.settings import END_ROUTES, START_ROUTES
 from app.user_flow_storage import user_flow_storage
 from app.utils.keyboard import KeyBoardFactory
 

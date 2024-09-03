@@ -1,5 +1,3 @@
-import dataclasses
-
 from app.database.models.base import BaseModel
 
 

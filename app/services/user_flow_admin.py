@@ -1,5 +1,3 @@
-import datetime
-
 from app.database.connection import Connection
 from app.database.models.schedules import ScheduleModel
 from app.database.models.user import UserModel
