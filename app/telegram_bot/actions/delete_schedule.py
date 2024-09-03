@@ -18,10 +18,7 @@ async def delete_schedule_step_1(update: Update, context: ContextTypes.DEFAULT_T
     flow = UserFlowAdmin()
     keyboard = KeyBoardFactory(2)
     user_flow_storage[user.id] = {}
-    schedules = sorted(
-        flow.show_schedules(), key=lambda x: (x.sport, datetime.strptime(f"{x.t_start} {x.date}", "%H:%M %d.%m.%Y"))
-    )
-    for schedule in schedules:
+    for schedule in flow.show_schedules():
         day = schedule.date
         t_start = schedule.t_start
         t_end = schedule.t_end

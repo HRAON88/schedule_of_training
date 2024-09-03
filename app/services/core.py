@@ -15,6 +15,11 @@ class Core:
             r = UsersRepository(c)
             return r.get_by_id(user_id)
 
+    def get_roles(self):
+        with Connection() as c:
+            r = RolesRepository(c)
+            return r.get_all()
+
     def add_admin_user(self, user_id, first_name, last_name, username) -> UserModel:
         with Connection() as c:
             r = UsersRepository(c)
