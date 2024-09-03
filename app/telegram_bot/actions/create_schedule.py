@@ -33,7 +33,7 @@ async def create_schedule_step_1(update: Update, context: ContextTypes.DEFAULT_T
         )
         keyboard[0].append(button)
         user_flow_storage[user.id][trace_id] = data
-
+    keyboard.append([InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="back_to_menu").model_dump_json())])
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text="Выберете вид спорта", reply_markup=reply_markup)
     return START_ROUTES
@@ -69,6 +69,7 @@ async def create_schedule_step_2(update: Update, context: ContextTypes.DEFAULT_T
             )
             index += 1
         keyboard.append(row)
+    keyboard.append([InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="back_to_menu").model_dump_json())])
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text="Выберете дату", reply_markup=reply_markup)
     return START_ROUTES
@@ -105,6 +106,7 @@ async def create_schedule_step_3(update: Update, context: ContextTypes.DEFAULT_T
             )
             index += 1
         keyboard.append(row)
+    keyboard.append([InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="back_to_menu").model_dump_json())])
     reply_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(text="Выберете время", reply_markup=reply_markup)
     return START_ROUTES

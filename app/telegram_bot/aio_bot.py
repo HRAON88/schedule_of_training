@@ -47,6 +47,7 @@ def main() -> None:
                 CallbackQueryHandler(edit_schedule, pattern=parse_callback("^edit_user_role$")),
                 CallbackQueryHandler(show_my_schedules, pattern=parse_callback("^show_my_schedules$")),
                 CallbackQueryHandler(show_allowed_schedules, pattern=parse_callback("^show_allowed_schedules$")),
+                CallbackQueryHandler(start_over, pattern=parse_callback("back_to_menu")),
             ],
             END_ROUTES: [
                 CallbackQueryHandler(start_over, pattern=parse_callback("back_to_menu")),
