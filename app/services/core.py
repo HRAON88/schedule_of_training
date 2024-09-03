@@ -27,7 +27,7 @@ class Core:
                 firstname=first_name,
                 lastname=last_name,
                 username=username,
-                roleid=admin_role.id,
+                role_id=admin_role.id,
             )
             return r.add(m)
 
@@ -43,6 +43,6 @@ class Core:
                 firstname=first_name,
                 lastname=last_name,
                 username=username,
-                roleid=admin_role.id,
+                role_id=admin_role.id,
             )
             return r.add(m)

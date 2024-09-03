@@ -42,4 +42,5 @@ class BaseFunction:
 
     def get_all(self):
         self.cur.execute(f"select * from {self.table}")
-        return [self.model(*i) for i in self.cur.fetchall()]
+        names = [description[0] for description in self.cur.description]
+        return [self.model(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]

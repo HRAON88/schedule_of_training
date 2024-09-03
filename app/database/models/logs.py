@@ -7,4 +7,4 @@ from app.database.models.base import BaseModel
 class LogsModel(BaseModel):
     id: int
     userid: int
-    scheduleid: int
+    schedule_id: int

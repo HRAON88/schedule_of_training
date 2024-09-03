@@ -7,6 +7,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import ContextTypes
 
 from app.database.connection import Connection
+from app.database.models.schedules import ScheduleModel
+from app.database.repository.schedules import SchedulesRepository
 from app.database.repository.sports import SportsRepository
 from app.schemes.callback_data import CallBackData
 from app.services.user_flow_admin import UserFlowAdmin
@@ -15,7 +17,6 @@ from app.user_flow_storage import user_flow_storage
 
 
 async def create_schedule_step_1(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
     await query.answer()
     with Connection() as con:
@@ -39,7 +40,6 @@ async def create_schedule_step_1(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def create_schedule_step_2(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
     await query.answer()
     user = update.callback_query.from_user
@@ -47,7 +47,7 @@ async def create_schedule_step_2(update: Update, context: ContextTypes.DEFAULT_T
     today = datetime.date.today()
     days = [
         datetime.date(year=today.year, month=today.month, day=day).strftime("%d.%m.%Y")
-        for day in range(1, monthrange(today.year, today.month)[1] + 1)
+        for day in range(today.day, monthrange(today.year, today.month)[1] + 1)
     ]
     keyboard = []
     col_count = 4
@@ -75,12 +75,16 @@ async def create_schedule_step_2(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def create_schedule_step_3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
     await query.answer()
     user = update.callback_query.from_user
     cache_data = user_flow_storage[user.id][json.loads(update.callback_query.data)["trace_id"]]
-    available_times = [f"{hour}:00 - {hour + 1}:00" for hour in range(8, 21)]
+
+    with Connection() as con:
+        repository = SchedulesRepository(con)
+        schedules: list[ScheduleModel] = repository.get_all_by_date_and_sport(cache_data["day"], cache_data["sport"]["id"])
+    exist_schedules = {(schedule.t_start, schedule.t_end)for schedule in schedules}
+    available_times = [f"{hour}:00 - {hour + 1}:00" for hour in range(8, 21) if (f"{hour}:00", f"{hour + 1}:00") not in exist_schedules]
     col_count = 4
     keyboard = []
     index = 0
@@ -107,7 +111,6 @@ async def create_schedule_step_3(update: Update, context: ContextTypes.DEFAULT_T
 
 
 async def create_schedule_step_4(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    """Parses the CallbackQuery and updates the message text."""
     query = update.callback_query
     await query.answer()
     user = update.callback_query.from_user
@@ -118,7 +121,7 @@ async def create_schedule_step_4(update: Update, context: ContextTypes.DEFAULT_T
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
     flow = UserFlowAdmin()
-    flow.create_schedule(time_start, time_end, cache_data["sport"]["id"])
+    flow.create_schedule(cache_data["day"], time_start, time_end, cache_data["sport"]["id"])
     await query.edit_message_text(
         text=f"Создана тренировка {cache_data['day']} с {time_start} до {time_end}. Вид спорта: {cache_data['sport']['sport']}",
         reply_markup=reply_markup,

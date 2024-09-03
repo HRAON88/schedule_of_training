@@ -9,13 +9,13 @@ class UserModel(BaseModel):
     firstname: str
     lastname: str
     username: str
-    roleid: int
+    role_id: int
 
     def is_admin(self):
-        return self.roleid == 1
+        return self.role_id == 1
 
     def is_coach(self):
-        return self.roleid == 2
+        return self.role_id == 2
 
     def is_sportsman(self):
-        return self.roleid == 3
+        return self.role_id == 3

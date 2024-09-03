@@ -1,3 +1,5 @@
+import datetime
+
 from app.database.connection import Connection
 from app.database.models.schedules import ScheduleModel
 from app.database.models.user import UserModel
@@ -7,13 +9,14 @@ from app.database.repository.users import UsersRepository
 
 class UserFlowAdmin:
 
-    def create_schedule(self, dt_start, dt_end, sport_id):
+    def create_schedule(self, date: str, t_start: str, t_end: str, sport_id: int):
         with Connection() as c:
             repository = SchedulesRepository(c)
             model = ScheduleModel(
-                dtstart=dt_start,
-                dtend=dt_end,
-                sportid=sport_id,
+                date=date,
+                t_start=t_start,
+                t_end=t_end,
+                sport_id=sport_id,
             )
             repository.add(model)
 
@@ -24,14 +27,14 @@ class UserFlowAdmin:
             if model:
                 repository.delete(model)
 
-    def edit_schedule(self, id_outer, dtstart_user, dtend_user, sportid_user):
+    def edit_schedule(self, id_outer, date, t_start, t_end):
         with Connection() as c:
             repository = SchedulesRepository(c)
             model: ScheduleModel = repository.get_by_id(id_outer)
             if model:
-                model.dtstart = dtstart_user
-                model.dtend = dtend_user
-                model.sportid = sportid_user
+                model.date = date
+                model.t_start = t_start
+                model.t_end = t_end
                 repository.update(model, id_outer)
 
     def change_user(self, firstname_user, lastname_user, role_id_user, id_outer):
@@ -41,5 +44,5 @@ class UserFlowAdmin:
             if model:
                 model.firstname = firstname_user
                 model.lastname = lastname_user
-                model.roleid = role_id_user
+                model.role_id = role_id_user
                 repository.update(model, id_outer)
