@@ -15,15 +15,18 @@ async def edit_user_role_step_1(update: Update, context: ContextTypes.DEFAULT_TY
     tg_user = update.callback_query.from_user
     await query.answer()
     flow = UserFlowAdmin()
+    core = Core()
+    roles = core.get_roles()
+    roles = {role.id: role for role in roles}
     keyboard = KeyBoardFactory(2)
     user_flow_storage[tg_user.id] = {}
     for user in flow.get_users():
-        text = "Пользователь"
-        if user.lastname and user.lastname != "null":
+        text = roles[user.role_id].role
+        if user.lastname and user.lastname.strip() not in ("null", ""):
             text += f" {user.lastname}"
-        if user.firstname and user.firstname != "null":
+        if user.firstname and user.firstname.strip() not in ("null", ""):
             text += f" {user.firstname}"
-        if user.username and user.username != "null":
+        if user.username and user.username.strip() not in ("null", ""):
             text += f" ({user.username})"
         trace_id = uuid.uuid4().hex
         keyboard.add_item(text, "eur_1", trace_id)
