@@ -15,14 +15,23 @@ class BaseFunction:
         if result:
             return self.model(*result)
 
+    def get_all_users(self):
+        self.cur.execute(f"SELECT * FROM {self.table}")
+        result = self.cur.fetchall()
+        if result:
+            return self.model(*result)
+
     def add(self, model: BaseModel):
         columns, values = [], []
         for key, value in model.to_dict().items():
+            if key == "id" and value is None:
+                continue
             columns.append(key)
             if value is None:
                 value = "null"
             values.append(value)
         self.cur.execute(f"INSERT INTO {self.table} {tuple(columns)} VALUES {tuple(values)}")
+        model.id = self.cur.lastrowid
         self.connection.commit()
         return self.get_by_id(model.id)
 
@@ -39,5 +48,5 @@ class BaseFunction:
 
     def get_all(self):
         self.cur.execute(f'select * from {self.table}')
-        return [self.model(*i) for i in self.cur.fetchall()]
-
+        names = [description[0] for description in self.cur.description]
+        return [self.model(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]

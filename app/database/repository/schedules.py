@@ -27,3 +27,11 @@ class SchedulesRepository(BaseFunction):
             INNER JOIN users on logs.userid
             WHERE scheduleid in {schedule_id} AND users.roleid != 2''')
         return [SchemeParticipated(*i) for i in self.cur.fetchall()]
+
+
+    def find_all_schedules(self):
+        self.cur.execute(f"SELECT * FROM {self.table}")
+        result = self.cur.fetchall()
+        if result:
+
+            return [self.model(*i) for i in result]

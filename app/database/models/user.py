@@ -5,10 +5,10 @@ from app.database.models.base import BaseModel
 
 @dataclasses.dataclass
 class UserModel(BaseModel):
-    id: int
-    firstname: str
-    lastname: str
-    roleid: int
+    id: int | None = None
+    firstname: str | None = None
+    lastname: str | None = None
+    roleid: int | None = None
 
     def is_admin(self):
         return self.roleid == 1

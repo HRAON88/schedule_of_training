@@ -7,10 +7,10 @@ from app.database.repository.users import UsersRepository
 
 
 class UserFlowAdmin:
-    def show_all_logs(self):
+    def show_all_schedules(self):
         with Connection() as c:
-            repository = LogsRepository(c)
-            return repository.find_all_logs()
+            repository = SchedulesRepository(c)
+            return repository.find_all_schedules()
 
 
     def create_schedule(self, dtstart_user, dtend_user, sportid_user):
@@ -40,7 +40,7 @@ class UserFlowAdmin:
                 model.sportid = sportid_user
                 repository.update(model, id_outer)
 
-    def change_user(self, firstname_user, lastname_user, role_id_user, id_outer):
+    def change_user(self,  role_id_user, id_outer, firstname_user=None, lastname_user=None):
         with Connection as c:
             repository = UsersRepository(c)
             model: UserModel = repository.get_by_id(id_outer)
@@ -49,3 +49,8 @@ class UserFlowAdmin:
                 model.lastname = lastname_user
                 model.roleid = role_id_user
                 repository.update(model, id_outer)
+
+    def show_all_users_by_admin(self):
+        with Connection() as c:
+            repository = UsersRepository(c)
+            return repository.get_all_users()
