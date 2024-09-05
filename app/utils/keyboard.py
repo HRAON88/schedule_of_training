@@ -22,6 +22,9 @@ class KeyBoardFactory:
                 [InlineKeyboardButton(text, callback_data=CallBackData(tag=tag, trace_id=trace_id).model_dump_json())]
             )
 
+    def add_new_line(self):
+        self.keyboard.append([])
+
     def generate(self):
         last_row = self.keyboard[-1]
         if not last_row:

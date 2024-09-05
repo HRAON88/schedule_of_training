@@ -27,14 +27,6 @@ class UserFlowAdmin:
             if model:
                 repository.delete(model)
 
-    def show_schedules(self) -> list[ScheduleModel]:
-        with Connection() as c:
-            repository = SchedulesRepository(c)
-            schedules = sorted(
-                repository.get_all(),
-                key=lambda x: (x.sport, datetime.strptime(f"{x.t_start} {x.date}", "%H:%M %d.%m.%Y"))
-            )
-            return schedules
 
     def edit_schedule(self, id_outer, date, t_start, t_end):
         with Connection() as c:

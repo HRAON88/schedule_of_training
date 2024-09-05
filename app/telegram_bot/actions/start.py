@@ -36,6 +36,15 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "Изменить пользователя", callback_data=CallBackData(tag="edit_user_role").model_dump_json()
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    "Показать мое расписание", callback_data=CallBackData(tag="show_my_schedules").model_dump_json()
+                ),
+                InlineKeyboardButton(
+                    "Записаться на тренировку",
+                    callback_data=CallBackData(tag="join_to_training").model_dump_json(),
+                ),
+            ]
         ]
     elif user.is_sportsman():
         keyboard = [
@@ -44,8 +53,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "Показать мое расписание", callback_data=CallBackData(tag="show_my_schedules").model_dump_json()
                 ),
                 InlineKeyboardButton(
-                    "Показать доступные тренировки",
-                    callback_data=CallBackData(tag="show_allowed_schedules").model_dump_json(),
+                    "Записаться на тренировку",
+                    callback_data=CallBackData(tag="join_to_training").model_dump_json(),
                 ),
             ],
         ]

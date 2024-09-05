@@ -2,5 +2,5 @@ from app.database.models.base import BaseModel
 
 
 class LogsModel(BaseModel):
-    userid: int
+    user_id: int
     schedule_id: int

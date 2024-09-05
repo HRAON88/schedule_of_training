@@ -36,6 +36,15 @@ async def start_over(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
                     "Изменить пользователя", callback_data=CallBackData(tag="edit_user_role").model_dump_json()
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    "Показать мое расписание", callback_data=CallBackData(tag="show_my_schedules").model_dump_json()
+                ),
+                InlineKeyboardButton(
+                    "Записаться на тренировку",
+                    callback_data=CallBackData(tag="join_to_training").model_dump_json(),
+                ),
+            ]
         ]
     elif user.is_sportsman():
         keyboard = [

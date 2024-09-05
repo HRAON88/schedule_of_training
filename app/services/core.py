@@ -1,6 +1,12 @@
+from datetime import datetime
+
 from app.database.connection import Connection
+from app.database.models.logs import LogsModel
+from app.database.models.schedules import ScheduleModel
 from app.database.models.user import UserModel
+from app.database.repository.logs import LogsRepository
 from app.database.repository.roles import RolesRepository
+from app.database.repository.schedules import SchedulesRepository
 from app.database.repository.users import UsersRepository
 
 
@@ -51,3 +57,18 @@ class Core:
                 role_id=admin_role.id,
             )
             return r.add(m)
+
+    def show_schedules(self) -> list[ScheduleModel]:
+        with Connection() as c:
+            repository = SchedulesRepository(c)
+            schedules = sorted(
+                repository.get_all(),
+                key=lambda x: (x.sport, datetime.strptime(f"{x.t_start} {x.date}", "%H:%M %d.%m.%Y"))
+            )
+            return schedules
+
+    def join_to_train(self, user_id, schedule_id):
+        with Connection() as c:
+            repository = LogsRepository(c)
+            model = LogsModel(user_id=user_id, schedule_id=schedule_id)
+            repository.add(model)

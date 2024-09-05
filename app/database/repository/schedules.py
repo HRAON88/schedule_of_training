@@ -27,7 +27,8 @@ class SchedulesRepository(BaseFunction):
             f"""
                 SELECT 
                 {self.table}.*,
-                sports.sport as sport
+                sports.sport as sport,
+                (SELECT COUNT(*) FROM logs WHERE logs.schedule_id = {self.table}.id) as participants
                 FROM {self.table}
                 INNER JOIN sports on sports.id = {self.table}.sport_id
             """

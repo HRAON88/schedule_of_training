@@ -4,11 +4,6 @@ from app.database.repository.logs import LogsRepository
 
 
 class UserFlowSportsman:
-    def join_to_train(self, item_id, user_id, scheduleid):
-        with Connection() as c:
-            repository = LogsRepository(c)
-            model = LogsModel(id=item_id, userid=user_id, scheduleid=scheduleid)
-            repository.add(model)
 
     def refuse_to_train(self, user_id, schedule_id):
         with Connection() as c:
