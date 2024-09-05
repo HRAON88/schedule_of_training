@@ -9,14 +9,14 @@ class BaseFunction:
         self.connection = connection
         self.cur = connection.cursor()
 
-    def get_by_id(self, item_id):
+    def get_by_id(self, item_id) -> BaseModel:
         self.cur.execute(f"SELECT * FROM {self.table} WHERE id = {item_id}")
         result = self.cur.fetchone()
         if result:
             names = [description[0] for description in self.cur.description]
             return self.model(**{col: val for val, col in zip(result, names)})
 
-    def add(self, model: BaseModel):
+    def add(self, model: BaseModel) -> BaseModel:
         columns, values = [], []
         for key, value in model.to_dict().items():
             if key == "id" and value is None:
@@ -44,7 +44,7 @@ class BaseFunction:
         self.cur.execute(f"UPDATE {self.table} SET {', '.join(spis)} WHERE id = {item_id}")
         self.connection.commit()
 
-    def get_all(self):
+    def get_all(self) -> list[BaseModel]:
         self.cur.execute(f"select * from {self.table}")
         names = [description[0] for description in self.cur.description]
         return [self.model(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]

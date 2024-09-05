@@ -18,7 +18,10 @@ async def join_to_training_step_1(update: Update, context: ContextTypes.DEFAULT_
     base = Core()
     keyboard = KeyBoardFactory(2)
     user_flow_storage[user.id] = {}
+    user_schedules = {logs.schedule_id for logs in base.get_schedules_by_user(user.id)}
     for schedule in base.show_schedules():
+        if schedule.id in user_schedules:
+            continue
         text = f"{schedule.sport}: {schedule.t_start} - {schedule.t_end} {schedule.date}"
         trace_id = uuid.uuid4().hex
         if schedule.participants:
@@ -42,6 +45,9 @@ async def join_to_training_step_2(update: Update, context: ContextTypes.DEFAULT_
     keyboard = KeyBoardFactory()
     flow_info = user_flow_storage[user.id][json.loads(update.callback_query.data)["trace_id"]]
     schedule = ScheduleModel(**flow_info["schedule"])
-    base.join_to_train(user.id, schedule.id)
-    await query.edit_message_text(text=f"Вы успешно присоединились к тренировке", reply_markup=keyboard.generate())
+    joined = base.join_to_train(user.id, schedule.id)
+    if joined:
+        await query.edit_message_text(text=f"Вы успешно присоединились к тренировке", reply_markup=keyboard.generate())
+    else:
+        await query.edit_message_text(text=f"Не удалось присоединились к тренировке", reply_markup=keyboard.generate())
     return END_ROUTES

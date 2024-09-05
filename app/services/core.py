@@ -70,5 +70,12 @@ class Core:
     def join_to_train(self, user_id, schedule_id):
         with Connection() as c:
             repository = LogsRepository(c)
+            is_exist = repository.find_log(user_id, schedule_id)
+            if is_exist:
+                return
             model = LogsModel(user_id=user_id, schedule_id=schedule_id)
-            repository.add(model)
+            return repository.add(model)
+    def get_schedules_by_user(self, user_id):
+        with Connection() as c:
+            repository = LogsRepository(c)
+            return repository.find_logs(user_id)
