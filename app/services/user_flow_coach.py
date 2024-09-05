@@ -1,7 +1,5 @@
 from app.database.connection import Connection
-from app.database.models.logs import LogsModel
 from app.database.repository.logs import LogsRepository
-
 
 
 class UserFlowCoach:

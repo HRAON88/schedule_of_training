@@ -6,8 +6,6 @@ from telegram.ext import ContextTypes
 
 from app.database.models.schedules import ScheduleModel
 from app.services.core import Core
-from app.services.user_flow_coach import UserFlowCoach
-from app.services.user_flow_sportsman import UserFlowSportsman
 from app.telegram_bot.settings import START_ROUTES, END_ROUTES
 from app.user_flow_storage import user_flow_storage
 from app.utils.keyboard import KeyBoardFactory

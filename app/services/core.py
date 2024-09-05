@@ -63,7 +63,7 @@ class Core:
             repository = SchedulesRepository(c)
             schedules = sorted(
                 repository.get_all(),
-                key=lambda x: (x.sport, datetime.strptime(f"{x.t_start} {x.date}", "%H:%M %d.%m.%Y"))
+                key=lambda x: (x.sport, datetime.strptime(f"{x.t_start} {x.date}", "%H:%M %d.%m.%Y")),
             )
             return schedules
 

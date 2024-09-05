@@ -1,6 +1,5 @@
 from app.database.models.sport import SportsModel
 
-
 l = [SportsModel(1, "sambo1"), SportsModel(1, "sambo"), SportsModel(2, "box")]
 d = {}
 k = []

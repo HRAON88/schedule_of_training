@@ -1,5 +1,6 @@
-import uuid
 import json
+import uuid
+
 from telegram import Update
 from telegram.ext import ContextTypes
 
@@ -50,6 +51,7 @@ async def edit_user_role_step_2(update: Update, context: ContextTypes.DEFAULT_TY
     await query.edit_message_text(text=f"Выберете роль", reply_markup=keyboard.generate())
     return START_ROUTES
 
+
 async def edit_user_role_step_3(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     query = update.callback_query
     user = update.callback_query.from_user
@@ -58,5 +60,7 @@ async def edit_user_role_step_3(update: Update, context: ContextTypes.DEFAULT_TY
     keyboard = KeyBoardFactory()
     flow_info = user_flow_storage[user.id][json.loads(update.callback_query.data)["trace_id"]]
     flow.change_user_role(flow_info["user"]["id"], flow_info["role"]["id"])
-    await query.edit_message_text(text=f"Пользователь получил роль '{flow_info['role']['role']}'", reply_markup=keyboard.generate())
+    await query.edit_message_text(
+        text=f"Пользователь получил роль '{flow_info['role']['role']}'", reply_markup=keyboard.generate()
+    )
     return END_ROUTES

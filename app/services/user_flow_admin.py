@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from app.database.connection import Connection
 from app.database.models.schedules import ScheduleModel
 from app.database.models.user import UserModel
@@ -27,7 +25,6 @@ class UserFlowAdmin:
             if model:
                 repository.delete(model)
 
-
     def edit_schedule(self, id_outer, date, t_start, t_end):
         with Connection() as c:
             repository = SchedulesRepository(c)
@@ -45,7 +42,7 @@ class UserFlowAdmin:
             return models
 
     def change_user_role(self, user_id, role_id):
-        with Connection()as c:
+        with Connection() as c:
             repository = UsersRepository(c)
             model: UserModel = repository.get_by_id(user_id)
             if model:

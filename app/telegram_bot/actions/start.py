@@ -44,7 +44,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     "Записаться на тренировку",
                     callback_data=CallBackData(tag="join_to_training").model_dump_json(),
                 ),
-            ]
+            ],
         ]
     elif user.is_sportsman():
         keyboard = [
