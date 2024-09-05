@@ -18,11 +18,12 @@ user_trainings = {}
 def send_welcome(message):
     core = Core()
     bot.reply_to(message, "Добро пожаловать! Нажмите на кнопку, чтобы записаться на тренировку.")
+    print(message)
     user = core.get_user(message.chat.id)
     if not user and core.is_admin_mode():
-        user = core.add_admin_user(message.chat.id, message.chat.first_name, message.chat.last_name)
+        user = core.add_admin_user(message.chat.id, message.chat.first_name, message.chat.last_name, message.from_user.username)
     elif not user:
-        user = core.add_basic_user(message.chat.id, message.chat.first_name, message.chat.last_name)
+        user = core.add_basic_user(message.chat.id, message.chat.first_name, message.chat.last_name, message.from_user.username)
 
     if user.is_admin():
         # Создание кнопки для спортсмена
@@ -92,7 +93,7 @@ def process_edit_user(message):
 def process_edit_user_step(message):
     global change_id
     dict_with_roles = {'admin':1, 'coach':2, 'sportsman':3}
-    UserFlowAdmin().change_user_role(id_outer=change_id, role_id_user=dict_with_roles[message.text])
+    UserFlowAdmin().change_user_role(change_id, dict_with_roles[message.text])
     bot.reply_to(message, "успешно изменено!")
 @bot.message_handler(func=lambda message: message.text == "Показать расписания" and message.chat.id == 5019406849)
 def show_all_schedule(message):

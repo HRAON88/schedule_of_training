@@ -8,14 +8,19 @@ class Core:
     def is_admin_mode(self):
         with Connection() as c:
             r = UsersRepository(c)
-            return len(r.get_all()) > 0
+            return len(r.get_all()) == 0
 
     def get_user(self, user_id) -> UserModel:
         with Connection() as c:
             r = UsersRepository(c)
             return r.get_by_id(user_id)
 
-    def add_admin_user(self, user_id, first_name, last_name) -> UserModel:
+    def get_roles(self):
+        with Connection() as c:
+            r = RolesRepository(c)
+            return r.get_all()
+
+    def add_admin_user(self, user_id, first_name, last_name, username) -> UserModel:
         with Connection() as c:
             r = UsersRepository(c)
             role_r = RolesRepository(c)
@@ -26,11 +31,12 @@ class Core:
                 id=user_id,
                 firstname=first_name,
                 lastname=last_name,
-                roleid=admin_role.id,
+                username=username,
+                role_id=admin_role.id,
             )
             return r.add(m)
 
-    def add_basic_user(self, user_id, first_name, last_name) -> UserModel:
+    def add_basic_user(self, user_id, first_name, last_name, username) -> UserModel:
         with Connection() as c:
             r = UsersRepository(c)
             role_r = RolesRepository(c)
@@ -41,6 +47,7 @@ class Core:
                 id=user_id,
                 firstname=first_name,
                 lastname=last_name,
-                roleid=admin_role.id,
+                username=username,
+                role_id=admin_role.id,
             )
             return r.add(m)

@@ -9,27 +9,28 @@ CREATE TABLE IF NOT EXISTS roles (
 
 CREATE TABLE IF NOT EXISTS schedules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        dtstart text not NULL,
-        dtend text not NULL,
-        sportid text not NULL,
-        foreign key (sportid) references sports(id)
+        date text not NULL,
+        t_start text not NULL,
+        t_end text not NULL,
+        sport_id int not NULL,
+        foreign key (sport_id) references sports(id)
 );
 
 CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         firstname text not NULL,
         lastname text,
-        roleid not NULL,
-        foreign key (roleid) references role(id)
+        username text,
+        role_id not NULL,
+        foreign key (role_id) references role(id)
 );
 
 CREATE TABLE IF NOT EXISTS logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        usersid int not NULL,
-        scheduleid int not NULL,
-        roleid int not NULL,
-        foreign key (scheduleid) references schedule(id),
-        foreign key (usersid) references users(id),
-        foreign key (roleid) references role(id)
+        users_id int not NULL,
+        schedule_id int not NULL,
+        role_id int not NULL,
+        foreign key (schedule_id) references schedule(id),
+        foreign key (users_id) references users(id),
+        foreign key (role_id) references role(id)
 );
-

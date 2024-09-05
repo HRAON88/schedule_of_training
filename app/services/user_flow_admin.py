@@ -51,4 +51,4 @@ class UserFlowAdmin:
     def show_all_users_by_admin(self):
         with Connection() as c:
             repository = UsersRepository(c)
-            return repository.get_all_users()
+            return repository.get_all()
