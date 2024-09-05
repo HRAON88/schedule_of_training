@@ -23,9 +23,9 @@ async def join_to_training_step_1(update: Update, context: ContextTypes.DEFAULT_
         trace_id = uuid.uuid4().hex
         if schedule.participants:
             text += f" Участников:{schedule.participants}"
-            keyboard.add_new_line()
+            keyboard.go_to_new_line()
             keyboard.add_item(text, "jtt_1", trace_id)
-            keyboard.add_new_line()
+            keyboard.go_to_new_line()
         else:
             keyboard.add_item(text, "jtt_1", trace_id)
         user_flow_storage[user.id][trace_id] = {"schedule": schedule.to_dict()}
