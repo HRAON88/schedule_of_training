@@ -1,4 +1,5 @@
 from app.database.models.logs import LogsModel
+from app.database.models.user import UserModel
 from app.database.repository.base import BaseFunction
 
 
@@ -12,6 +13,22 @@ class LogsRepository(BaseFunction):
         if result:
             names = [description[0] for description in self.cur.description]
             return self.model(**{col: val for val, col in zip(result, names)})
+
+    def get_participants(self, schedule_id):
+        self.cur.execute(
+            f"""
+                SELECT 
+                    users.* 
+                FROM {self.table} 
+                JOIN users on users.id = {self.table}.user_id
+                WHERE {self.table}.schedule_id = {schedule_id}
+                
+            """
+        )
+        result = self.cur.fetchall()
+        if result:
+            names = [description[0] for description in self.cur.description]
+            return [UserModel(**{col: val for val, col in zip(item, names)}) for item in result]
 
     def find_logs(self, user_id):
         self.cur.execute(f"SELECT * FROM {self.table} WHERE user_id = {user_id}")

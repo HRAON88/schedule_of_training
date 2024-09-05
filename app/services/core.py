@@ -75,7 +75,19 @@ class Core:
                 return
             model = LogsModel(user_id=user_id, schedule_id=schedule_id)
             return repository.add(model)
+
     def get_schedules_by_user(self, user_id):
         with Connection() as c:
             repository = LogsRepository(c)
             return repository.find_logs(user_id)
+
+    def refuse_to_train(self, user_id, schedule_id):
+        with Connection() as c:
+            repository = LogsRepository(c)
+            model = repository.find_log(user_id, schedule_id)
+            repository.delete(model)
+
+    def get_participants(self, schedule_id):
+        with Connection() as c:
+            repository = LogsRepository(c)
+            return repository.get_participants(schedule_id)

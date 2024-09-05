@@ -15,7 +15,8 @@ from app.telegram_bot.actions.delete_schedule import delete_schedule_step_1, del
 from app.telegram_bot.actions.edit_schedule import edit_schedule_step_1, edit_schedule_step_2, edit_schedule_step_3
 from app.telegram_bot.actions.edit_user_role import edit_user_role_step_1, edit_user_role_step_2, edit_user_role_step_3
 from app.telegram_bot.actions.join_to_training import join_to_training_step_1, join_to_training_step_2
-from app.telegram_bot.actions.show_my_schedules import show_my_schedules
+from app.telegram_bot.actions.show_my_schedules import show_my_schedules_step_1, show_my_schedules_step_2, \
+    show_my_schedules_step_3
 from app.telegram_bot.actions.start import start
 from app.telegram_bot.actions.start_over import start_over
 from app.telegram_bot.settings import END_ROUTES, START_ROUTES
@@ -52,7 +53,9 @@ def main() -> None:
                 CallbackQueryHandler(edit_user_role_step_1, pattern=parse_callback("^edit_user_role$")),
                 CallbackQueryHandler(edit_user_role_step_2, pattern=parse_callback("^eur_1$")),
                 CallbackQueryHandler(edit_user_role_step_3, pattern=parse_callback("^eur_2$")),
-                CallbackQueryHandler(show_my_schedules, pattern=parse_callback("^show_my_schedules$")),
+                CallbackQueryHandler(show_my_schedules_step_1, pattern=parse_callback("^show_my_schedules$")),
+                CallbackQueryHandler(show_my_schedules_step_2, pattern=parse_callback("^sms_1$")),
+                CallbackQueryHandler(show_my_schedules_step_3, pattern=parse_callback("^sms_2$")),
                 CallbackQueryHandler(join_to_training_step_1, pattern=parse_callback("^join_to_training$")),
                 CallbackQueryHandler(join_to_training_step_2, pattern=parse_callback("^jtt_1$")),
                 CallbackQueryHandler(start_over, pattern=parse_callback("back_to_menu")),
