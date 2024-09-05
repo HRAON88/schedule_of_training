@@ -91,7 +91,7 @@ def process_edit_user(message):
 
 def process_edit_user_step(message):
     global change_id
-    UserFlowAdmin().change_user(id_outer=change_id, role_id_user=message.text)
+    UserFlowAdmin().change_user_role(id_outer=change_id, role_id_user=message.text)
     bot.reply_to(message, "успешно изменено!")
 @bot.message_handler(func=lambda message: message.text == "Показать расписания" and message.chat.id == 5019406849)
 def show_all_schedule(message):

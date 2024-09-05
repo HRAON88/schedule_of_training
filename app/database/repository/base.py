@@ -13,7 +13,8 @@ class BaseFunction:
         self.cur.execute(f"SELECT * FROM {self.table} WHERE id = {item_id}")
         result = self.cur.fetchone()
         if result:
-            return self.model(*result)
+            names = [description[0] for description in self.cur.description]
+            return self.model(**{col: val for val, col in zip(result, names)})
 
     def get_all_users(self):
         self.cur.execute(f"SELECT * FROM {self.table}")
@@ -42,8 +43,11 @@ class BaseFunction:
     def update(self, model: BaseModel, item_id):
         spis = []
         for key, value in model.to_dict().items():
-            spis.append(f'{key} = {value}')
-        self.cur.execute(f"UPDATE {self.table} SET {str(spis)[1:-1]} WHERE id = {item_id} ")
+            if type(value) == int:
+                spis.append(f"{key}={value}")
+            elif type(value) == str:
+                spis.append(f"{key}='{value}'")
+        self.cur.execute(f"UPDATE {self.table} SET {', '.join(spis)} WHERE id = {item_id}")
         self.connection.commit()
 
     def get_all(self):

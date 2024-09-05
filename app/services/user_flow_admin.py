@@ -40,15 +40,13 @@ class UserFlowAdmin:
                 model.sportid = sportid_user
                 repository.update(model, id_outer)
 
-    def change_user(self,  role_id_user, id_outer, firstname_user=None, lastname_user=None):
-        with Connection as c:
+    def change_user_role(self, user_id, role_id):
+        with Connection()as c:
             repository = UsersRepository(c)
-            model: UserModel = repository.get_by_id(id_outer)
+            model: UserModel = repository.get_by_id(user_id)
             if model:
-                model.firstname = firstname_user
-                model.lastname = lastname_user
-                model.roleid = role_id_user
-                repository.update(model, id_outer)
+                model.role_id = role_id
+                repository.update(model, user_id)
 
     def show_all_users_by_admin(self):
         with Connection() as c:
