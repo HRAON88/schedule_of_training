@@ -30,7 +30,7 @@ class UserFlowAdmin:
             if model:
                 repository.delete(model)
 
-    def edit_schedule(self, id_outer, dtstart_user, dtend_user, sportid_user):
+    def edit_schedule(self, id_outer=None, dtstart_user=None, dtend_user=None, sportid_user=None):
         with Connection() as c:
             repository = SchedulesRepository(c)
             model: ScheduleModel = repository.get_by_id(id_outer)

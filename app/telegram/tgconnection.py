@@ -19,13 +19,16 @@ def send_welcome(message):
     core = Core()
     bot.reply_to(message, "Добро пожаловать! Нажмите на кнопку, чтобы записаться на тренировку.")
     print(message)
-    user = core.get_user(message.chat.id)
-    if not user and core.is_admin_mode():
-        user = core.add_admin_user(message.chat.id, message.chat.first_name, message.chat.last_name, message.from_user.username)
-    elif not user:
-        user = core.add_basic_user(message.chat.id, message.chat.first_name, message.chat.last_name, message.from_user.username)
+    core = Core()
+    tg_user = message.from_user
+    user = core.get_user(tg_user.id)
 
-    if user.is_admin():
+    if not user and core.is_admin_mode():
+        user = core.add_admin_user(tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username)
+    elif not user:
+        user = core.add_basic_user(tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username)
+
+    if not user.is_admin():
         # Создание кнопки для спортсмена
         markup = types.ReplyKeyboardMarkup(row_width=3)
         item1 = types.KeyboardButton("Записаться на тренировку")
@@ -47,7 +50,7 @@ def send_welcome(message):
 
 #кнопки спортсмена
 # Запись на тренировку
-@bot.message_handler(func=lambda message: message.text == "Записаться на тренировку")
+@bot.message_handler(func=lambda message: message.text == "Записаться на тренировку" and Core().get_user(message.chat.id).is_sportsman())
 def book_training(message):
     user_id = message.chat.id
     if user_id in user_trainings:
@@ -58,7 +61,7 @@ def book_training(message):
 
 
 # Отказ от тренировки
-@bot.message_handler(func=lambda message: message.text == "Отказаться от тренировки")
+@bot.message_handler(func=lambda message: message.text == "Отказаться от тренировки" and Core().get_user(message.chat.id).is_sportsman())
 def cancel_training(message):
     user_id = message.chat.id
     if user_id in user_trainings:
@@ -68,7 +71,7 @@ def cancel_training(message):
         bot.send_message(user_id, "Вы не записаны на тренировку.")
 
 
-@bot.message_handler(func=lambda message: message.text == "Показать расписание")
+@bot.message_handler(func=lambda message: message.text == "Показать расписание" and Core().get_user(message.chat.id).is_sportsman())
 def book_training(message):
     user_id = message.chat.id
     if user_id in user_trainings:
@@ -78,7 +81,7 @@ def book_training(message):
         bot.send_message(user_id, "Вы успешно записаны на тренировку!")
 
 #кнопки админа
-@bot.message_handler(func=lambda message: message.text == "Изменить пользователя")
+@bot.message_handler(func=lambda message: message.text == "Изменить пользователя" and Core().get_user(message.chat.id).is_admin())
 def change(message):
     msg = bot.reply_to(message, f"выберите какого пользователя хотите изменить: {UserFlowAdmin().show_all_users_by_admin()}")
     bot.register_next_step_handler(msg, process_edit_user)
@@ -93,13 +96,17 @@ def process_edit_user(message):
 def process_edit_user_step(message):
     global change_id
     dict_with_roles = {'admin':1, 'coach':2, 'sportsman':3}
-    UserFlowAdmin().change_user_role(change_id, dict_with_roles[message.text])
-    bot.reply_to(message, "успешно изменено!")
+    try:
+        UserFlowAdmin().change_user_role(change_id, dict_with_roles[message.text])
+        bot.reply_to(message, "успешно изменено! Необходимо обновить бота")
+    except BaseException:
+        bot.reply_to(message, "Попробуйте сначала")
+
 @bot.message_handler(func=lambda message: message.text == "Показать расписания" and message.chat.id == 5019406849)
 def show_all_schedule(message):
     bot.reply_to(message, f"Всё расписание {UserFlowAdmin().show_all_schedules()}")
 
-@bot.message_handler(func=lambda message: "Создать расписание" in message.text and message.chat.id == 5019406849)
+@bot.message_handler(func=lambda message: "Создать расписание" in message.text and Core().get_user(message.chat.id).is_admin())
 def create_schedule(message):
     msg = bot.reply_to(message, 'введите начало времени занятия в формате ЧЧ:ММ/ЧЧ.ММ')
     bot.register_next_step_handler(msg, process_dtstart_step)
@@ -139,18 +146,55 @@ def process_sportid_step(message):
 
     bot.reply_to(message, 'введите данные в формате: "Создать расписание 10:00/01/01 12:00/01/01 1"')
 
-@bot.message_handler(func=lambda message: message.text == "Удалить расписание" and message.chat.id == 5019406849)
+
+@bot.message_handler(func=lambda message: "Изменить раписание" in message.text and Core().get_user(message.chat.id).is_admin())
+def edit_schedule_step1(message):
+    msg = bot.reply_to(message, f'Введите id расписания, которое хотите изменить {UserFlowAdmin().show_all_schedules()}')
+    bot.register_next_step_handler(msg, process_edit_schedule_step2)
+def process_edit_schedule_step2(message):
+    try:
+        msg = bot.reply_to(message, "укажите что хотите изменить")
+        markup = types.ReplyKeyboardMarkup(row_width=3)
+        item1 = types.KeyboardButton("Начало тренировки")
+        item2 = types.KeyboardButton("Конец тренировки")
+        item3 = types.KeyboardButton("Спорт id")
+        markup.add(item1, item2, item3)
+        bot.register_next_step_handler(msg, process_edit_schedule_step3)
+    except:
+        bot.reply_to(message, "Попробуйте ещё раз")
+        markup = types.ReplyKeyboardMarkup(row_width=4)
+        item0 = types.KeyboardButton("Показать расписания")
+        item1 = types.KeyboardButton("Создать расписание")
+        item2 = types.KeyboardButton("Удалить расписание")
+        item3 = types.KeyboardButton("Изменить расписание")
+        item4 = types.KeyboardButton("Изменить пользователя")
+        markup.add(item0, item1, item2, item3, item4)
+
+
+
+
+def process_edit_schedule_step3(message):
+    try:
+        UserFlowAdmin().edit_schedule()
+@bot.message_handler(func=lambda message: message.text == "Удалить расписание" and Core().get_user(message.chat.id).is_admin())
 def delete_schedule(message):
+
     msg = bot.reply_to(message, 'введите id расписания')
     bot.register_next_step_handler(msg, process_delete_schedule)
 def process_delete_schedule(message):
-    if int(message.text):
-        UserFlowAdmin().delete_schedule(message.text)
-        bot.reply_to(message, 'успешно удалено!')
-    else:
-        msg = bot.reply_to(message, 'введите корректный id расписания')
-        bot.register_next_step_handler(msg, process_delete_schedule)
+    try:
+        if int(message.text):
 
+            UserFlowAdmin().delete_schedule(message.text)
+            bot.reply_to(message, 'успешно удалено!')
+
+                bot.reply_to(message, 'Попробуйте еще раз')
+
+        else:
+            msg = bot.reply_to(message, 'введите корректный id расписания')
+            bot.register_next_step_handler(msg, process_delete_schedule)
+    except BaseException:
+        bot.reply_to(message, 'Попробуйте еще раз')
 @bot.message_handler(func=lambda message: True)
 def echo_all(message):
     print(message.text)
