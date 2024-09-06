@@ -8,7 +8,7 @@ class KeyBoardFactory:
         self.column_count = column_count
         self.keyboard = [[]]
         self.default_line = [
-            InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="back_to_menu").model_dump_json())
+            InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="Start").model_dump_json())
         ]
 
     def add_item(self, text: str, tag: str | None = None, trace_id: str | None = None):
