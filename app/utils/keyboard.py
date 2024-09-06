@@ -11,7 +11,7 @@ class KeyBoardFactory:
             InlineKeyboardButton("Вернуться в меню", callback_data=CallBackData(tag="back_to_menu").model_dump_json())
         ]
 
-    def add_item(self, text: str, tag: str, trace_id: str | None = None):
+    def add_item(self, text: str, tag: str | None = None, trace_id: str | None = None):
         last_row = self.keyboard[-1]
         if len(last_row) < self.column_count:
             last_row.append(

@@ -7,6 +7,7 @@ from app.database.models.user import UserModel
 from app.database.repository.logs import LogsRepository
 from app.database.repository.roles import RolesRepository
 from app.database.repository.schedules import SchedulesRepository
+from app.database.repository.sports import SportsRepository
 from app.database.repository.users import UsersRepository
 
 
@@ -91,3 +92,8 @@ class Core:
         with Connection() as c:
             repository = LogsRepository(c)
             return repository.get_participants(schedule_id)
+
+    def get_sports(self):
+        with Connection() as con:
+            repository = SportsRepository(con)
+            return repository.get_all()
