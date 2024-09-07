@@ -15,7 +15,7 @@ class SchedulesRepository(BaseFunction):
             sports.sport
             FROM {self.table}
             INNER JOIN logs on logs.scheduleid = {self.table}.id
-            INNER JOIN logs on sports.id = {self.table}.sportsid
+            INNER JOIN logs on sports.id = {self.table}.sport_id
             WHERE userid = {user_id}
         """)
         return [ScheduleModelDetail(*i) for i in self.cur.fetchall()]

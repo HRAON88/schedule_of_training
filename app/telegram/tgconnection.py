@@ -144,7 +144,7 @@ def process_sportid_step(message):
 
 
 
-    bot.reply_to(message, 'введите данные в формате: "Создать расписание 10:00/01/01 12:00/01/01 1"')
+
 
 
 @bot.message_handler(func=lambda message: "Изменить раписание" in message.text and Core().get_user(message.chat.id).is_admin())
@@ -152,16 +152,20 @@ def edit_schedule_step1(message):
     msg = bot.reply_to(message, f'Введите id расписания, которое хотите изменить {UserFlowAdmin().show_all_schedules()}')
     bot.register_next_step_handler(msg, process_edit_schedule_step2)
 def process_edit_schedule_step2(message):
+    global schedule_changed_id
+    schedule_changed_id = message.text
+
     try:
-        msg = bot.reply_to(message, "укажите что хотите изменить")
+
         markup = types.ReplyKeyboardMarkup(row_width=3)
         item1 = types.KeyboardButton("Начало тренировки")
         item2 = types.KeyboardButton("Конец тренировки")
         item3 = types.KeyboardButton("Спорт id")
         markup.add(item1, item2, item3)
+        msg = bot.reply_to(message, "укажите что хотите изменить", reply_markup=markup)
         bot.register_next_step_handler(msg, process_edit_schedule_step3)
     except:
-        bot.reply_to(message, "Попробуйте ещё раз")
+
         markup = types.ReplyKeyboardMarkup(row_width=4)
         item0 = types.KeyboardButton("Показать расписания")
         item1 = types.KeyboardButton("Создать расписание")
@@ -169,13 +173,24 @@ def process_edit_schedule_step2(message):
         item3 = types.KeyboardButton("Изменить расписание")
         item4 = types.KeyboardButton("Изменить пользователя")
         markup.add(item0, item1, item2, item3, item4)
-
-
-
+        bot.reply_to(message, "Попробуйте ещё раз", reply_markup=markup)
 
 def process_edit_schedule_step3(message):
-    try:
-        UserFlowAdmin().edit_schedule()
+    if message.text == "Начало тренировки":
+        msg = bot.reply_to(message, "Напишите новое время начала тренировки")
+        bot.register_next_step_handler(msg, process_edit_schedule_step3_start)
+
+
+
+
+
+
+
+def process_edit_schedule_step3_start(message):
+    UserFlowAdmin().edit_schedule(id_outer=schedule_changed_id,dtstart_user=message.text)
+    bot.reply_to(message, 'успешно изменено!')
+
+
 @bot.message_handler(func=lambda message: message.text == "Удалить расписание" and Core().get_user(message.chat.id).is_admin())
 def delete_schedule(message):
 
@@ -188,7 +203,7 @@ def process_delete_schedule(message):
             UserFlowAdmin().delete_schedule(message.text)
             bot.reply_to(message, 'успешно удалено!')
 
-                bot.reply_to(message, 'Попробуйте еще раз')
+            bot.reply_to(message, 'Попробуйте еще раз')
 
         else:
             msg = bot.reply_to(message, 'введите корректный id расписания')
