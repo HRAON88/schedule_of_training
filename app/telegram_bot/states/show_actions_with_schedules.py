@@ -18,7 +18,7 @@ class ShowActionsWithSchedules(State):
             trace_id = self.create_trace_id()
             keyboard.add_item(action, tag, trace_id)
             self.set_context(trace_id, {})
-        await self.query.edit_message_text(text="Выберете занятие", reply_markup=keyboard.generate())
+        await self.query.edit_message_text(text="Выберете действие", reply_markup=keyboard.generate())
         return self.state
 
     def get_allowed_actions(self) -> list[tuple[str, str]]:
