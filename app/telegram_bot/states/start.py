@@ -16,7 +16,12 @@ class Start(State):
 
     async def run(self):
         core = Core()
+
         user = core.get_user(self.user.id)
+        if not user and core.is_admin_mode():
+            user = core.add_admin_user(self.user.id, self.user.first_name, self.user.last_name, self.user.username)
+        elif not user:
+            user = core.add_basic_user(self.user.id, self.user.first_name, self.user.last_name, self.user.username)
         if self.query:
             await self.query.answer()
         user_flow_storage.pop(self.user.id, None)

@@ -29,6 +29,7 @@ class LogsRepository(BaseFunction):
         if result:
             names = [description[0] for description in self.cur.description]
             return [UserModel(**{col: val for val, col in zip(item, names)}) for item in result]
+        return []
 
     def find_logs(self, user_id):
         self.cur.execute(f"SELECT * FROM {self.table} WHERE user_id = {user_id}")
@@ -36,3 +37,4 @@ class LogsRepository(BaseFunction):
         if result:
             names = [description[0] for description in self.cur.description]
             return [self.model(**{col: val for val, col in zip(item, names)}) for item in result]
+        return []
