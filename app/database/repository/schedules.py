@@ -29,9 +29,8 @@ class SchedulesRepository(BaseFunction):
         return [SchemeParticipated(*i) for i in self.cur.fetchall()]
 
 
-    def find_all_schedules(self):
-        self.cur.execute(f"SELECT * FROM {self.table}")
-        result = self.cur.fetchall()
-        if result:
-
-            return [self.model(*i) for i in result]
+    # def find_all_schedules(self):
+    #     self.cur.execute(f"SELECT * FROM {self.table}")
+    #     result = self.cur.fetchall()
+    #     if result:
+    #         return [self.model(*i) for i in result]

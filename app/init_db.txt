@@ -9,7 +9,6 @@ CREATE TABLE IF NOT EXISTS roles (
 
 CREATE TABLE IF NOT EXISTS schedules (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        date text not NULL,
         t_start text not NULL,
         t_end text not NULL,
         sport_id int not NULL,

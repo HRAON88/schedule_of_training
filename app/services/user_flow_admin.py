@@ -10,7 +10,7 @@ class UserFlowAdmin:
     def show_all_schedules(self):
         with Connection() as c:
             repository = SchedulesRepository(c)
-            return repository.find_all_schedules()
+            return repository.get_all()
 
 
     def create_schedule(self, dtstart_user, dtend_user, sportid_user):
