@@ -4,7 +4,7 @@ from app.database.models.roles import RolesModel
 from app.database.models.sport import SportsModel
 from app.database.repository.roles import RolesRepository
 from app.database.repository.sports import SportsRepository
-from telegram.tgconnection import bot
+from telegram.tg_functional import bot
 
 
 def upload_roles(con):
