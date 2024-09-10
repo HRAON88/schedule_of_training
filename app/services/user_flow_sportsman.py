@@ -27,3 +27,9 @@ class UserFlowSportsman:
             repository = LogsRepository(c)
             result = repository.find_logs(user_id)
             return result
+
+    def show_all_schedules(self, user_id):
+        with Connection() as c:
+            repository = SchedulesRepository(c)
+            result = repository.get_all_sportsman()
+            return result

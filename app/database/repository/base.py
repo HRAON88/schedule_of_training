@@ -55,3 +55,8 @@ class BaseFunction:
         names = [description[0] for description in self.cur.description]
         result = [str(self.model(**{col: val for val, col in zip(item, names)})) for item in self.cur.fetchall()]
         return '\n'.join(result)
+
+    def get_all_sportsman(self):
+        self.cur.execute(f'select * from {self.table}')
+        names = [description[0] for description in self.cur.description]
+        return [self.model(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]

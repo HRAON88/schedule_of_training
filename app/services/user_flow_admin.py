@@ -10,8 +10,22 @@ class UserFlowAdmin:
     def show_all_schedules(self):
         with Connection() as c:
             repository = SchedulesRepository(c)
-            return repository.get_all()
+            result = repository.get_all_sportsman()
+            transcript ={1:'самбо', 2:'бокс', 3:'футбол'}
+            all_schedules = []
+            for count, values in enumerate(result, start=1):
+                made_schedule = ''
+                made_schedule += f'{count}) '
+                made_schedule += f'начало - {values.t_start}, '
+                made_schedule += f'конец - {values.t_end}, '
+                made_schedule += f'вид спорта - {transcript[values.sport_id]}'
+                all_schedules.append(made_schedule)
 
+            return all_schedules
+
+
+
+    # .rstrip('t_start=')
 
     def create_schedule(self, dtstart_user, dtend_user, sportid_user):
         with Connection() as c:

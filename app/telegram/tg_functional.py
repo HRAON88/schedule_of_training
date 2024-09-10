@@ -5,6 +5,7 @@ from telebot.types import User
 from app.database.repository.users import UsersRepository
 from app.services.core import Core
 from app.services.user_flow_admin import UserFlowAdmin
+from app.services.user_flow_sportsman import UserFlowSportsman
 from app.settings import settings
 
 bot = telebot.TeleBot(settings.token)
@@ -63,12 +64,7 @@ def cancel_for_admin(message):
 
 @bot.message_handler(func=lambda message: message.text == "Записаться на тренировку" and Core().get_user(message.chat.id).is_sportsman())
 def book_training(message):
-    user_id = message.chat.id
-    if user_id in user_trainings:
-        bot.send_message(user_id, "Вы уже записаны на тренировку.")
-    else:
-        user_trainings[user_id] = True
-        bot.send_message(user_id, "Вы успешно записаны на тренировку!")
+    bot.reply_to(message, f'Все доступные расписания: \n{UserFlowAdmin().show_all_schedules()}')
 
 
 # Отказ от тренировки
