@@ -5,15 +5,14 @@ from app.database.repository.schedules import SchedulesRepository
 
 
 class UserFlowSportsman:
-    def join_to_train(self, item_id, user_id, scheduleid):
+    def join_to_train(self, user_id, schedule_id):
         with Connection() as c:
             repository = LogsRepository(c)
-            model = LogsModel(
-                id=item_id,
-                userid=user_id,
-                scheduleid=scheduleid
-            )
-            repository.add(model)
+            is_exist = repository.find_log(user_id, schedule_id)
+            if is_exist:
+                return
+            model = LogsModel(user_id=user_id, schedule_id=schedule_id)
+            return repository.add(model)
 
     def refuse_to_train(self, user_id, schedule_id):
         with Connection() as c:

@@ -64,7 +64,21 @@ def cancel_for_admin(message):
 
 @bot.message_handler(func=lambda message: message.text == "Записаться на тренировку" and Core().get_user(message.chat.id).is_sportsman())
 def book_training(message):
-    bot.reply_to(message, f'Все доступные расписания: \n{UserFlowAdmin().show_all_schedules()}')
+
+    schedules = UserFlowAdmin().show_all_schedules()
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    buttons = []
+    for count in schedules:
+        buttons.append(types.InlineKeyboardButton(text=f"{count}", callback_data=f"{count[0]}"))
+    markup.add(*buttons)
+    bot.reply_to(message, 'Доступный список тренировок', reply_markup=markup)
+@bot.callback_query_handler(func=lambda callback: callback)
+def book_training(callback):
+    bot.send_message(callback.message.chat.id, UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data))
+
+
+
+
 
 
 # Отказ от тренировки
