@@ -64,7 +64,7 @@ def cancel_for_admin(message):
 
 @bot.message_handler(func=lambda message: message.text == "Записаться на тренировку" and Core().get_user(message.chat.id).is_sportsman())
 def book_training(message):
-
+    bot.reply_to(message, UserFlowSportsman().show_schedules())
     schedules = UserFlowAdmin().show_all_schedules()
     markup = types.InlineKeyboardMarkup(row_width=1)
     buttons = []

@@ -1,5 +1,6 @@
 from app.database.connection import Connection
 from app.database.models.logs import LogsModel
+from app.database.models.schedules import ScheduleModel
 from app.database.repository.logs import LogsRepository
 from app.database.repository.schedules import SchedulesRepository
 
@@ -32,3 +33,12 @@ class UserFlowSportsman:
             repository = SchedulesRepository(c)
             result = repository.get_all_sportsman()
             return result
+
+    def show_schedules(self) -> list[ScheduleModel]:
+        with Connection() as c:
+            repository = SchedulesRepository(c)
+            schedules = sorted(
+                repository.get_all(),
+                key=lambda x: (x == True)),
+
+            return schedules
