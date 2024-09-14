@@ -64,7 +64,6 @@ def cancel_for_admin(message):
 
 @bot.message_handler(func=lambda message: message.text == "Записаться на тренировку" and Core().get_user(message.chat.id).is_sportsman())
 def book_training(message):
-    bot.reply_to(message, UserFlowSportsman().show_schedules())
     schedules = UserFlowAdmin().show_all_schedules()
     markup = types.InlineKeyboardMarkup(row_width=1)
     buttons = []
@@ -74,7 +73,11 @@ def book_training(message):
     bot.reply_to(message, 'Доступный список тренировок', reply_markup=markup)
 @bot.callback_query_handler(func=lambda callback: callback)
 def book_training(callback):
-    bot.send_message(callback.message.chat.id, UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data))
+    #bot.send_message(callback.message.chat.id, f'успешно! {callback.message.chat.id}, {callback.data}')
+    UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data)
+
+    bot.send_message(callback.message.chat.id, f'ВЫ успешно записаны!')
+
 
 
 
@@ -84,22 +87,28 @@ def book_training(callback):
 # Отказ от тренировки
 @bot.message_handler(func=lambda message: message.text == "Отказаться от тренировки" and Core().get_user(message.chat.id).is_sportsman())
 def cancel_training(message):
-    user_id = message.chat.id
-    if user_id in user_trainings:
-        del user_trainings[user_id]
-        bot.send_message(user_id, "Вы успешно отказались от тренировки.")
-    else:
-        bot.send_message(user_id, "Вы не записаны на тренировку.")
+    schedules = UserFlowSportsman().show_all_booked_schedules(message.chat.id)
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    buttons = []
+    for count in schedules:
+        buttons.append(types.InlineKeyboardButton(text=f"{count}", callback_data='aa'))
+    markup.add(*buttons)
+    bot.reply_to(message, f'Ваши тренировки {schedules}:', reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda callback: callback)
+def book_training(callback):
+    # bot.send_message(callback.message.chat.id, f'успешно! {callback.message.chat.id}, {callback.data}')
+    UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data)
+
+    bot.send_message(callback.message.chat.id, f'ВЫ успешно записаны!')
 
 
 @bot.message_handler(func=lambda message: message.text == "Показать расписание" and Core().get_user(message.chat.id).is_sportsman())
-def book_training(message):
-    user_id = message.chat.id
-    if user_id in user_trainings:
-        bot.send_message(user_id, "Вы уже записаны на тренировку.")
-    else:
-        user_trainings[user_id] = True
-        bot.send_message(user_id, "Вы успешно записаны на тренировку!")
+def show_training(message):
+    bot.reply_to(message, f'расписание {UserFlowSportsman().show_schedule(message.chat.id)}')
+
+
 
 #кнопки админа
 @bot.message_handler(func=lambda message: message.text == "Изменить пользователя" and Core().get_user(message.chat.id).is_admin())

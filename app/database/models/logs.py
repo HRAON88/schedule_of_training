@@ -4,6 +4,6 @@ from app.database.models.base import BaseModel
 
 class LogsModel(BaseModel):
 
-    userid: int
-    scheduleid: int
+    users_id: int
+    schedule_id: int
     id: int | None = None

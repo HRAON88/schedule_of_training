@@ -22,15 +22,17 @@ class SchedulesRepository(BaseFunction):
 
     def find_who_will_go(self, *schedule_id):
         self.cur.execute(f'''
-            SELECT users.firstname, users.lastname, logs.scheduleid
+            SELECT users.firstname, users.lastname, logs.schedule_id
             FROM logs
-            INNER JOIN users on logs.userid
-            WHERE scheduleid in {schedule_id} AND users.roleid != 2''')
+            INNER JOIN users on logs.users_id
+            WHERE schedule_id in {schedule_id} AND users.roleid != 2''')
         return [SchemeParticipated(*i) for i in self.cur.fetchall()]
 
+    def find_schedule(self, schedule_id):
+        self.cur.execute(f"SELECT * FROM {self.table} WHERE id = {schedule_id}")
+        result = self.cur.fetchone()
+        if result:
+            names = [description[0] for description in self.cur.description]
+            return [self.model(**{col: val for val, col in zip(item, names)}) for item in result]
+        return []
 
-    # def find_all_schedules(self):
-    #     self.cur.execute(f"SELECT * FROM {self.table}")
-    #     result = self.cur.fetchall()
-    #     if result:
-    #         return [self.model(*i) for i in result]

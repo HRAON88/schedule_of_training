@@ -28,8 +28,6 @@ CREATE TABLE IF NOT EXISTS logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         users_id int not NULL,
         schedule_id int not NULL,
-        role_id int not NULL,
         foreign key (schedule_id) references schedule(id),
-        foreign key (users_id) references users(id),
-        foreign key (role_id) references role(id)
+        foreign key (users_id) references users(id)
 );
