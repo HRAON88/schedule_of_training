@@ -60,3 +60,4 @@ class BaseFunction:
         self.cur.execute(f'select * from {self.table}')
         names = [description[0] for description in self.cur.description]
         return [self.model(**{col: val for val, col in zip(item, names)}) for item in self.cur.fetchall()]
+

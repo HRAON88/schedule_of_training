@@ -26,6 +26,16 @@ class UserFlowAdmin:
 
         return all_schedules
 
+    def transformation2(self, model):
+        transcript = {1: 'самбо', 2: 'бокс', 3: 'футбол', 4: 'карате'}
+        made_schedule = f''
+        made_schedule += f'{model[1]}-'
+        made_schedule += f'{model[2]}, '
+        made_schedule += f'{transcript[model[3]]}'
+
+
+        return made_schedule
+
     def create_schedule(self, dtstart_user, dtend_user, sportid_user):
         with Connection() as c:
             repository = SchedulesRepository(c)

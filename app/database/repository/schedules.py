@@ -36,3 +36,9 @@ class SchedulesRepository(BaseFunction):
             return [self.model(**{col: val for val, col in zip(item, names)}) for item in result]
         return []
 
+
+    def get_all_sportsman_schedules(self, id):
+        self.cur.execute(f'select * from {self.table} WHERE id = {id}')
+        p = self.cur.fetchone()
+        return p
+

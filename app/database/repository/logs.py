@@ -13,11 +13,19 @@ class LogsRepository(BaseFunction):
             names = [description[0] for description in self.cur.description]
             return self.model(**{col: val for val, col in zip(result, names)})
 
+    def find_log_by_id(self, id):
+        self.cur.execute(f"SELECT * FROM {self.table} WHERE id = {id}")
+        result = self.cur.fetchone()
+        if result:
+            names = [description[0] for description in self.cur.description]
+            return self.model(**{col: val for val, col in zip(result, names)})
+
     def find_logs(self, user_id):
         self.cur.execute(f"SELECT * FROM {self.table} WHERE users_id = {user_id}")
         result = self.cur.fetchall()
-        print(result)
         if result:
             names = [description[0] for description in self.cur.description]
             return [self.model(**{col: val for val, col in zip(item, names)}) for item in result]
 
+
+    

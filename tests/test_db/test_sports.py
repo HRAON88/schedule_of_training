@@ -11,3 +11,5 @@ class TestSports(BaseTest):
     @property
     def model(self):
         return SportsModel(1, 'sambo')
+
+

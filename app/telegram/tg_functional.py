@@ -68,19 +68,28 @@ def book_training(message):
     markup = types.InlineKeyboardMarkup(row_width=1)
     buttons = []
     for count in schedules:
-        buttons.append(types.InlineKeyboardButton(text=f"{count}", callback_data=f"{count[0]}"))
+        buttons.append(types.InlineKeyboardButton(text=f"{count}", callback_data=f"д{count[:count.find(')')]}"))
     markup.add(*buttons)
     bot.reply_to(message, 'Доступный список тренировок', reply_markup=markup)
 @bot.callback_query_handler(func=lambda callback: callback)
+def define(callback):
+    if callback.data[0] == 'д':
+        book_training(callback)
+    elif callback.data[0] == 'у':
+        cancel_training_callback(callback)
+
 def book_training(callback):
     #bot.send_message(callback.message.chat.id, f'успешно! {callback.message.chat.id}, {callback.data}')
-    UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data)
-
-    bot.send_message(callback.message.chat.id, f'ВЫ успешно записаны!')
-
-
-
-
+    result = UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data[1:])
+    if result:
+        bot.send_message(callback.message.chat.id, f'Вы успешно записаны!')
+        return
+    else:
+        bot.send_message(callback.message.chat.id, f'Вы уже записаны!')
+        return
+# @bot.message_handler(func=lambda message: message.text == "17" and Core().get_user(message.chat.id).is_sportsman())
+# def cancel_training1(message):
+#     UserFlowSportsman().refuse_to_train(users_id=message.chat.id, schedule_id=message.text)
 
 
 
@@ -90,23 +99,33 @@ def cancel_training(message):
     schedules = UserFlowSportsman().show_all_booked_schedules(message.chat.id)
     markup = types.InlineKeyboardMarkup(row_width=1)
     buttons = []
-    for count in schedules:
-        buttons.append(types.InlineKeyboardButton(text=f"{count}", callback_data='aa'))
-    markup.add(*buttons)
-    bot.reply_to(message, f'Ваши тренировки {schedules}:', reply_markup=markup)
+    if schedules:
+        for count in schedules:
+            buttons.append(types.InlineKeyboardButton(text=f"{count[:count.find('+')]}", callback_data=f"у{count[count.find('+'):]}"))
+        markup.add(*buttons)
+        bot.reply_to(message, f'Ваши тренировки:', reply_markup=markup)
+    else:
+        bot.reply_to(message, f'У вас еще нет записей! ', reply_markup=markup)
 
 
-@bot.callback_query_handler(func=lambda callback: callback)
-def book_training(callback):
-    # bot.send_message(callback.message.chat.id, f'успешно! {callback.message.chat.id}, {callback.data}')
-    UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data)
-
-    bot.send_message(callback.message.chat.id, f'ВЫ успешно записаны!')
-
+#
+def cancel_training_callback(callback):
+    result = UserFlowSportsman().refuse_to_train(id=callback.data[1:])
+    if result:
+        bot.send_message(callback.message.chat.id, f'Запись отменена!')
+        return
+    else:
+        bot.send_message(callback.message.chat.id, f'Запись уже отменена!')
+        return
 
 @bot.message_handler(func=lambda message: message.text == "Показать расписание" and Core().get_user(message.chat.id).is_sportsman())
 def show_training(message):
-    bot.reply_to(message, f'расписание {UserFlowSportsman().show_schedule(message.chat.id)}')
+    result = UserFlowSportsman().show_all_booked_schedules(message.chat.id)
+    if result:
+        spis = [count[:count.find('+')] for count in result]
+        bot.reply_to(message, "\n".join(spis))
+    else:
+        bot.reply_to(message, "Вы еще не записаны!")
 
 
 
@@ -317,4 +336,11 @@ def process_delete_schedule(message):
 def echo_all(message):
     print(message.text)
     bot.reply_to(message, "Пожалуйста, используйте кнопки для взаимодействия.")
-    main_menu_for_admin(message.chat.id)
+    core = Core()
+    tg_user = message.from_user
+    user = core.get_user(tg_user.id)
+    if not user.is_admin():
+        main_menu_for_sportsman(message.chat.id)
+
+    else:
+        main_menu_for_admin(message.chat.id)
