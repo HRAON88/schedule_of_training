@@ -1,8 +1,10 @@
 from app.database.models.logs import LogsModel
 from app.database.models.schedules import ScheduleModel
+from app.database.repository.base import BaseFunction
 from app.database.repository.logs import LogsRepository
 from app.database.repository.schedules import SchedulesRepository
 from app.database.connection import Connection
+from app.database.repository.users import UsersRepository
 from app.schemes.participated import SchemeParticipated
 
 
@@ -37,3 +39,28 @@ class UserFlowCoach:
             for model in schedules:
                 model.participated = dictionary.get(model.id, [])
             return schedules
+
+    def show_users(self, schedule_id):
+        with Connection() as c:
+            repository1 = LogsRepository(c)
+            repository2 = UsersRepository(c)
+            result = repository1.count_of_users(schedule_id)
+            spisok = []
+            if result:
+                for count, user in enumerate(result, start=1):
+                    all_information = repository2.get_by_id(user[0])
+                    full_name_user = f'{count}) '
+
+                    if all_information.firstname !='null':
+                        full_name_user += all_information.firstname
+                        full_name_user += ' '
+                    if all_information.lastname != 'null':
+                        full_name_user += all_information.lastname
+                        full_name_user += ' '
+                    if all_information.username !='null':
+                        full_name_user += f'@{all_information.username}'
+                    spisok.append(full_name_user)
+            return spisok
+
+
+

@@ -5,6 +5,7 @@ from telebot.types import User
 from app.database.repository.users import UsersRepository
 from app.services.core import Core
 from app.services.user_flow_admin import UserFlowAdmin
+from app.services.user_flow_coach import UserFlowCoach
 from app.services.user_flow_sportsman import UserFlowSportsman
 from app.settings import settings
 
@@ -17,23 +18,28 @@ user_trainings = {}
 # Начало диалога
 @bot.message_handler(commands=['start', 'help'])
 def send_welcome(message):
-    core = Core()
     bot.reply_to(message, "Добро пожаловать! Для взаимодействия используйте кнопки!")
-    print(message)
     core = Core()
     tg_user = message.from_user
     user = core.get_user(tg_user.id)
-
     if not user and core.is_admin_mode():
         user = core.add_admin_user(tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username)
     elif not user:
         user = core.add_basic_user(tg_user.id, tg_user.first_name, tg_user.last_name, tg_user.username)
 
-    if not user.is_admin():
+    if user.is_coach():
+        main_menu_for_coach(message.chat.id)
+    elif user.is_sportsman():
         main_menu_for_sportsman(message.chat.id)
-
-    else:
+    elif user.is_admin():
         main_menu_for_admin(message.chat.id)
+
+def main_menu_for_coach(message):
+    markup = types.ReplyKeyboardMarkup(row_width=1)
+    item1 = types.KeyboardButton("Показать кто идёт")
+    markup.add(item1)
+    bot.send_message(message, 'Главное меню', reply_markup=markup)
+
 def main_menu_for_sportsman(message):
     markup = types.ReplyKeyboardMarkup(row_width=3)
     item1 = types.KeyboardButton("Записаться на тренировку")
@@ -60,6 +66,15 @@ def cancel_for_admin(message):
     item4 = types.KeyboardButton("Изменить пользователя")
     markup.add(item0, item1, item2, item3, item4)
     bot.send_message(message, 'Вы возвращены в главное меню', reply_markup=markup)
+@bot.message_handler(func=lambda message: message.text == "Показать кто идёт" and Core().get_user(message.chat.id).is_coach())
+def show_users_for_coach(message):
+    schedules = UserFlowAdmin().show_all_schedules()
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    buttons = []
+    for count in schedules:
+        buttons.append(types.InlineKeyboardButton(text=f"{count}", callback_data=f"т{count[:count.find(')')]}"))
+    markup.add(*buttons)
+    bot.reply_to(message, 'Выберите из списка тренировок', reply_markup=markup)
 
 
 @bot.message_handler(func=lambda message: message.text == "Записаться на тренировку" and Core().get_user(message.chat.id).is_sportsman())
@@ -72,14 +87,25 @@ def book_training(message):
     markup.add(*buttons)
     bot.reply_to(message, 'Доступный список тренировок', reply_markup=markup)
 @bot.callback_query_handler(func=lambda callback: callback)
-def define(callback):
+def all_call_back(callback):
     if callback.data[0] == 'д':
         book_training(callback)
     elif callback.data[0] == 'у':
         cancel_training_callback(callback)
+    elif callback.data[0] == 'т':
+        show_count_users(callback)
+
+def show_count_users(callback):
+    users = UserFlowCoach().show_users(callback.data[1:])
+    markup = types.InlineKeyboardMarkup(row_width=1)
+    buttons = []
+    for count in users:
+        buttons.append(types.InlineKeyboardButton(text=f"{count[:count.find('@')]}", url=f"https://t.me/{count[count.find('@')+1:]}"))
+    markup.add(*buttons)
+    bot.send_message(callback.message.chat.id, 'Список участников', reply_markup=markup)
 
 def book_training(callback):
-    #bot.send_message(callback.message.chat.id, f'успешно! {callback.message.chat.id}, {callback.data}')
+    #bot.send_message(callback.message.chat.id, callback.data)
     result = UserFlowSportsman().join_to_train(user_id=callback.message.chat.id, schedule_id=callback.data[1:])
     if result:
         bot.send_message(callback.message.chat.id, f'Вы успешно записаны!')
@@ -339,8 +365,9 @@ def echo_all(message):
     core = Core()
     tg_user = message.from_user
     user = core.get_user(tg_user.id)
-    if not user.is_admin():
+    if user.is_coach():
+        main_menu_for_coach(message.chat.id)
+    elif user.is_sportsman():
         main_menu_for_sportsman(message.chat.id)
-
-    else:
+    elif user.is_admin():
         main_menu_for_admin(message.chat.id)

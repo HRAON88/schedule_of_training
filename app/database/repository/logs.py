@@ -27,5 +27,11 @@ class LogsRepository(BaseFunction):
             names = [description[0] for description in self.cur.description]
             return [self.model(**{col: val for val, col in zip(item, names)}) for item in result]
 
+    def count_of_users(self, schedule_id):
+        self.cur.execute(f"SELECT users_id FROM {self.table} WHERE schedule_id = {schedule_id}")
+        result = self.cur.fetchall()
+        if result:
+            return result
+        else: return False
 
-    
+
